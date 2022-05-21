@@ -11,11 +11,13 @@ local DataManager
 
 local Utility = ReplicatedStorage:WaitForChild("Utility")
 local ToolFunctions = require(Utility:WaitForChild("ToolFunctions"))
+local CharacterService = require(Utility:WaitForChild("CharacterService"))
 
 local DataBase = ReplicatedStorage.Database
 local ShovelData = require(DataBase:WaitForChild("ShovelData"))
 
 local Assets = ReplicatedStorage.Assets
+local FamousData = ReplicatedStorage.Database.FamousData
 
 local ToolService = {}
 
@@ -129,29 +131,33 @@ end
 function ToolService:CreateFamous(player, famousType)
     local famous = {
         uniqueId = HttpService:GenerateGUID(false),
-        chestType = famousType,
+        famousType = famousType,
     }
 
-    ToolService:LoadFamousType(player, famous)
+    ToolService:LoadFamous(player, famous)
 
     return famous
 end
 
 function ToolService:LoadFamous(player, famous)
-    local Tool = Assets.Tools:FindFirstChild(famous.famousType):Clone()
-    local famousStats = ShovelData[famous.famousType]
+    local Tool = Assets.Famous.Tool:Clone()
+    local famousStats = FamousData:FindFirstChild(famous.famousType)
 
-    --createlook
+    ToolFunctions:ReadyTool(Tool, famous, famousStats)
+
+    CharacterService:CreateCharacter(Tool.Handle, famous.famousType)
 
     if not Loaded[player] then
         repeat task.wait(1) until Loaded[player]
     end
     Tool.Parent = player.Backpack
 
-    ToolService:ChestManager(player, Tool, famous, famousStats)
+    ToolService:FamousManager(player, Tool, famous, famousStats)
 end
 
-function ToolService:ChestManager(player, Tool, famous, famousStats)
+function ToolService:FamousManager(player, Tool, famous, famousStats)
+    local Handle = Tool:WaitForChild("Handle")
+
     local function CheckIfAlive(player)
         return player
         and player.Character
@@ -163,6 +169,8 @@ function ToolService:ChestManager(player, Tool, famous, famousStats)
         if not CheckIfAlive(player) then
             return
         end
+
+        Handle.Character.Humanoid.PlatformStand = true
 
         EquippedTracker[player] = {dataType = "Famous", data = famous, tool = Tool}
     end

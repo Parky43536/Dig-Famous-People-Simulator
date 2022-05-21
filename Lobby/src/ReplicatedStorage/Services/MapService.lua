@@ -3,12 +3,16 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Players = game:GetService("Players")
 
 local Assets = ReplicatedStorage.Assets
+local FamousData = ReplicatedStorage.Database.FamousData:GetChildren()
 
 local SerServices = ServerScriptService.Services
 local DataManager = require(SerServices.DataManager)
 
+local Utility = ReplicatedStorage:WaitForChild("Utility")
+local CharacterService = require(Utility:WaitForChild("CharacterService"))
+
 local MapService = {}
-local ChestPrompts = {}
+local FamousPrompts = {}
 
 local rayCastParams = RaycastParams.new()
 rayCastParams.FilterType = Enum.RaycastFilterType.Blacklist
@@ -48,60 +52,76 @@ local function coveredPart(part)
 	return true
 end
 
-function MapService:ChanceParts(chanceParts)
-    --[[if chanceParts.Legendary then
-        for _,part in pairs(chanceParts.Legendary) do
-            if coveredPart(part) then
-                local chest = Assets.Chests.Legendary:Clone()
-                chest:PivotTo(part.CFrame * CFrame.Angles(0, math.random(0, 360), 0))
-                chest.Parent = part.Parent
-                part:Destroy()
+local function chooseRandom(dictionary, rarity)
+	while true do
+		local list = dictionary
+        if not list[1] then
+            list = {}
+            for key, value in pairs(dictionary) do
+                list[#list+1] = {key = key, value = value}
+            end
 
-                local chestPrompt = {
-                    prompt = chest.PrimaryPart.ChestPrompt,
-                    chestType = "LegendaryChest",
-                    model = chest,
-                }
-                table.insert(ChestPrompts, chestPrompt)
+            local picked = list[math.random(#list)]
+            if picked.value.Rarity.Value == rarity then
+                return picked.Name
+            else
+                task.wait()
+            end
+        else
+            local picked = list[math.random(#list)]
+            if picked.Rarity.Value == rarity then
+                return picked.Name
+            else
+                task.wait()
+            end
+        end
+	end
+end
+
+function MapService:ChanceParts(chanceParts)
+    local function famousHandler(tabler, rarity)
+        for _,part in pairs(tabler) do
+            if coveredPart(part) then
+                local chosen = chooseRandom(FamousData, rarity)
+                if chosen then
+                    local famous = Assets.Famous.FamousHolder:Clone()
+                    CharacterService:CreateCharacter(famous, chosen)
+                    famous:PivotTo(part.CFrame * CFrame.Angles(0, math.random(0, 360), 0))
+                    famous.Parent = part.Parent
+                    part:Destroy()
+
+                    famous.FamousPrompt.ObjectText = rarity .. ", " .. 1 / MapService.chances[rarity] * 5000
+                    famous.FamousPrompt.ActionText = "Collect " .. Players:GetNameFromUserIdAsync(chosen)
+
+                    local famousPrompt = {
+                        prompt = famous.FamousPrompt,
+                        famousType = chosen,
+                        model = famous,
+                    }
+                    table.insert(FamousPrompts, famousPrompt)
+                end
             end
         end
     end
 
-    if chanceParts.RareChest then
-        for _,part in pairs(chanceParts.RareChest) do
-            if coveredPart(part) then
-                local chest = Assets.Chests.Rare:Clone()
-                chest:PivotTo(part.CFrame * CFrame.Angles(0, math.random(0, 360), 0))
-                chest.Parent = part.Parent
-                part:Destroy()
+    if chanceParts.Mythic then
+        famousHandler(chanceParts.Mythic, "Mythic")
+    end
 
-                local chestPrompt = {
-                    prompt = chest.PrimaryPart.ChestPrompt,
-                    chestType = "RareChest",
-                    model = chest,
-                }
-                table.insert(ChestPrompts, chestPrompt)
-            end
-        end
-    end]]
+    if chanceParts.Legendary then
+        famousHandler(chanceParts.Legendary, "Legendary")
+    end
+
+    if chanceParts.Epic then
+        famousHandler(chanceParts.Epic, "Epic")
+    end
+
+    if chanceParts.Rare then
+        famousHandler(chanceParts.Rare, "Rare")
+    end
 
     if chanceParts.Common then
-        for _,part in pairs(chanceParts.Common) do
-            if coveredPart(part) then
-                local chest = Assets.Famous.FamousHolder:Clone()
-                --createlook
-                chest:PivotTo(part.CFrame * CFrame.Angles(0, math.random(0, 360), 0))
-                chest.Parent = part.Parent
-                part:Destroy()
-
-                local chestPrompt = {
-                    prompt = chest.PrimaryPart.ChestPrompt,
-                    chestType = "CommonChest",
-                    model = chest,
-                }
-                table.insert(ChestPrompts, chestPrompt)
-            end
-        end
+        famousHandler(chanceParts.Common, "Common")
     end
 
     if chanceParts.Crystal then
@@ -127,16 +147,16 @@ function MapService:ChanceParts(chanceParts)
     end
 end
 
-function MapService:ProcessChest(player, promptObject)
-    for key, promptData in pairs(ChestPrompts) do
+function MapService:ProcessFamous(player, promptObject)
+    for key, promptData in pairs(FamousPrompts) do
         if promptData.prompt == promptObject then
             if not promptData.processing then
                 promptData.processing = true
 
-                local added = DataManager:NewChest(player, promptData.chestType)
+                local added = DataManager:NewFamous(player, promptData.famousType)
                 if added then
                     promptData.model:Destroy()
-                    table.remove(ChestPrompts, key)
+                    table.remove(FamousPrompts, key)
                     return true
                 else
                     promptData.processing = nil

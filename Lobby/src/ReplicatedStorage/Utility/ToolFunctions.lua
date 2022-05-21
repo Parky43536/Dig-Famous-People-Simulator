@@ -1,3 +1,5 @@
+local Players = game:GetService("Players")
+
 local ToolFunctions = {}
 
 function ToolFunctions:Create(ty)
@@ -14,22 +16,16 @@ function ToolFunctions:Create(ty)
 	end
 end
 
-----------------------------------------------------
+function ToolFunctions:ReadyTool(Tool, famous, famousStats)
+	task.spawn(function()
+		local content, isReady = Players:GetUserThumbnailAsync(famous.famousType, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+		Tool.TextureId = content
+	end)
 
---[[local function ChooseRandom(dictionary, materialPicked)
-	while true do
-		local list = {}
-		for key, value in pairs(dictionary) do
-			list[#list+1] = {key = key, value = value}
-		end
+	Tool.ToolTip = Players:GetNameFromUserIdAsync(famous.famousType) .. ", " .. famousStats.Rarity.Value
 
-		local picked = list[math.random(#list)]
-		if picked.value.Material and materialPicked then
-			task.wait()
-		else
-			return picked
-		end
-	end
-end]]
+	local dialog = famousStats:Clone()
+	dialog.Parent = Tool.Handle
+end
 
 return ToolFunctions

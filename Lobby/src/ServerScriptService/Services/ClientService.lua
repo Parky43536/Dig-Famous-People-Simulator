@@ -15,9 +15,9 @@ function ClientService.InitializeTools(player, profile)
         ToolService:LoadShovel(player, shovel)
     end
 
-    --[[for _,famous in pairs(profile.Data.Famous) do
-        ToolService:LoadFamous(player, chest)
-    end]]
+    for _,famous in pairs(profile.Data.Famous) do
+        ToolService:LoadFamous(player, famous)
+    end
 end
 
 return ClientService

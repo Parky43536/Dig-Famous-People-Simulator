@@ -111,15 +111,15 @@ function DataManager:NewShovel(player, shovelType)
 	end
 end
 
-function DataManager:NewChest(player, chestType)
+function DataManager:NewFamous(player, famousType)
     local playerProfile = self:GetProfile(player)
 
 	if playerProfile then
-		local newChest = ToolService:CreateChest(player, chestType)
+		local newFamous = ToolService:CreateFamous(player, famousType)
 
-		table.insert(playerProfile.Data.Chests, newChest)
+		table.insert(playerProfile.Data.Famous, newFamous)
 
-		return newChest
+		return newFamous
 	end
 end
 
