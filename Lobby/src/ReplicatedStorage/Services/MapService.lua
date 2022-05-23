@@ -30,14 +30,13 @@ local directions = {
 
 MapService.chances = {
     Mythic = 10000,
-    Legendary = 3200,
+    Legendary = 3000,
     Epic = 1500,
-    Rare = 750,
-    Common = 125,
+    Rare = 500,
+    Common = 100,
     Crystal = 30,
     Variety = 3,
 }
-
 local function coveredPart(part)
 	local position = part.Position
 	local returnTable = directions
@@ -65,14 +64,14 @@ local function chooseRandom(dictionary, rarity)
 
             local picked = list[math.random(#list)]
             if picked.value.Rarity == rarity then
-                return picked.Name
+                return picked.key
             else
                 task.wait()
             end
         else
             local picked = list[math.random(#list)]
             if picked.Rarity == rarity then
-                return picked.Name
+                return picked
             else
                 task.wait()
             end
@@ -80,20 +79,25 @@ local function chooseRandom(dictionary, rarity)
 	end
 end
 
+function MapService:RoundDeci(n: number, decimal: number)
+    return math.round(n * 10 ^ decimal) / (10 ^ decimal)
+end
+
 function MapService:ChanceParts(chanceParts)
     local function famousHandler(tabler, rarity)
         for _,part in pairs(tabler) do
             if coveredPart(part) then
                 local chosen = chooseRandom(FamousData, rarity)
-                if chosen then
+                local famousStats = FamousData[chosen]
+                if chosen and famousStats then
                     local famous = Assets.Famous.FamousHolder:Clone()
-                    CharacterService:CreateCharacter(famous, chosen)
+                    CharacterService:CreateCharacterRig(famous, chosen)
                     famous:PivotTo(part.CFrame * CFrame.Angles(0, math.random(0, 360), 0))
                     famous.Parent = part.Parent
                     part:Destroy()
 
-                    famous.FamousPrompt.ObjectText = rarity .. ", " .. 1 / MapService.chances[rarity] * 5000
-                    famous.FamousPrompt.ActionText = "Collect " .. Players:GetNameFromUserIdAsync(chosen)
+                    famous.FamousPrompt.ObjectText = rarity .. ", " .. MapService:RoundDeci(1 / MapService.chances[rarity] * 5000, 2) .. "%"
+                    famous.FamousPrompt.ActionText = "Collect " .. famousStats.Name
 
                     local famousPrompt = {
                         prompt = famous.FamousPrompt,

@@ -22,11 +22,10 @@ function CharacterService:CreateCharacterIcon(Tool, userId)
 	end
 end
 
-function CharacterService:CreateCharacterRig(Tool, userId)
+function CharacterService:CreateCharacterRig(Part, userId)
 	local characterModel
 
 	if not Assets.Storage.Rigs:FindFirstChild(userId) then
-		local username = Players:GetNameFromUserIdAsync(userId)
 		local characterData = Players:GetCharacterAppearanceAsync(userId)
 
 		characterModel = Assets.Famous.R15:Clone()
@@ -109,11 +108,11 @@ function CharacterService:CreateCharacterRig(Tool, userId)
 		characterModel = Assets.Storage.Rigs:FindFirstChild(userId):Clone()
 	end
 
-	characterModel.Parent = Tool.Handle
-	Tool.Handle.Position = characterModel.PrimaryPart.Position
+	characterModel.Parent = Part
+	Part.Position = characterModel.PrimaryPart.Position
 
 	local weld = Instance.new("WeldConstraint")
-	weld.Part0 = Tool.Handle
+	weld.Part0 = Part
 	weld.Part1 = characterModel.PrimaryPart
 	weld.Parent = characterModel.PrimaryPart
 

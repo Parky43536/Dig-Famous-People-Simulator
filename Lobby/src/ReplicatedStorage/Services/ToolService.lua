@@ -11,6 +11,9 @@ local ExplosionService
 local SerServices = ServerScriptService.Services
 local DataManager
 
+local RepServices = ReplicatedStorage.Services
+local MapService
+
 local Utility = ReplicatedStorage:WaitForChild("Utility")
 local CharacterService = require(Utility:WaitForChild("CharacterService"))
 
@@ -158,9 +161,10 @@ function ToolService:LoadFamous(player, famous)
         local Tool = Assets.Famous.Tool:Clone()
 
         CharacterService:CreateCharacterIcon(Tool, famous.famousType)
-        CharacterService:CreateCharacterRig(Tool, famous.famousType)
+        CharacterService:CreateCharacterRig(Tool.Handle, famous.famousType)
 
-        Tool.ToolTip = Players:GetNameFromUserIdAsync(famous.famousType) .. ", " .. famousStats.Rarity
+        if not MapService then MapService = require(RepServices.MapService) end
+        Tool.ToolTip = famousStats.Name .. ", " .. famousStats.Rarity .. ", " .. MapService:RoundDeci(1 / MapService.chances[famousStats.Rarity] * 5000, 2) .. "%"
 
         if not Loaded[player] then
             repeat task.wait(1) until Loaded[player]
