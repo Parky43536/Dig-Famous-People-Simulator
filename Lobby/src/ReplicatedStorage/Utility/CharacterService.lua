@@ -5,17 +5,34 @@ local Assets = ReplicatedStorage.Assets
 
 local CharacterService = {}
 
-function CharacterService:CreateCharacter(part, userId)
+function CharacterService:CreateCharacterIcon(Tool, userId)
+	if not Assets.Storage.Icons:FindFirstChild(userId) then
+		task.spawn(function()
+			local content = Players:GetUserThumbnailAsync(userId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+
+			Tool.TextureId = content
+
+			local stringValue = Instance.new("StringValue")
+			stringValue.Value = content
+			stringValue.Name = userId
+			stringValue.Parent = Assets.Storage.Icons
+		end)
+	else
+		Tool.TextureId = Assets.Storage.Icons:FindFirstChild(userId).Value
+	end
+end
+
+function CharacterService:CreateCharacterRig(Tool, userId)
 	local characterModel
 
-	if not Assets.FamousStorage:FindFirstChild(userId) then
+	if not Assets.Storage.Rigs:FindFirstChild(userId) then
 		local username = Players:GetNameFromUserIdAsync(userId)
 		local characterData = Players:GetCharacterAppearanceAsync(userId)
 
 		characterModel = Assets.Famous.R15:Clone()
 		local characterHead = characterModel.Head
 		local characterHumanoid = characterModel.Humanoid
-		characterModel.Name = username
+		characterModel.Name = userId
 
 		for _,obj in next, characterData:GetChildren() do
 			if obj:IsA("Accessory") then
@@ -82,22 +99,21 @@ function CharacterService:CreateCharacter(part, userId)
 		characterHumanoid.BodyHeightScale.Value /= 2
 		characterHumanoid.BodyHeightScale.Value -= 0.1
 
-		if not Assets.FamousStorage:FindFirstChild(userId) then
+		if not Assets.Storage.Rigs:FindFirstChild(userId) then
 			local storage = characterModel:Clone()
-			storage.Parent = Assets.FamousStorage
+			storage.Parent = Assets.Storage.Rigs
 		end
 
 		characterData:Destroy()
 	else
-		characterModel = Assets.FamousStorage:FindFirstChild(userId):Clone()
+		characterModel = Assets.Storage.Rigs:FindFirstChild(userId):Clone()
 	end
 
-	characterModel.Name = "Character"
-	characterModel.Parent = part
-	part.Position = characterModel.PrimaryPart.Position
+	characterModel.Parent = Tool.Handle
+	Tool.Handle.Position = characterModel.PrimaryPart.Position
 
 	local weld = Instance.new("WeldConstraint")
-	weld.Part0 = part
+	weld.Part0 = Tool.Handle
 	weld.Part1 = characterModel.PrimaryPart
 	weld.Parent = characterModel.PrimaryPart
 

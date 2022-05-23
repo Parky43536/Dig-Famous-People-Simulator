@@ -3,7 +3,9 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Players = game:GetService("Players")
 
 local Assets = ReplicatedStorage.Assets
-local FamousData = ReplicatedStorage.Database.FamousData:GetChildren()
+
+local DataBase = ReplicatedStorage.Database
+local FamousData = require(DataBase:WaitForChild("FamousData"))
 
 local SerServices = ServerScriptService.Services
 local DataManager = require(SerServices.DataManager)
@@ -62,14 +64,14 @@ local function chooseRandom(dictionary, rarity)
             end
 
             local picked = list[math.random(#list)]
-            if picked.value.Rarity.Value == rarity then
+            if picked.value.Rarity == rarity then
                 return picked.Name
             else
                 task.wait()
             end
         else
             local picked = list[math.random(#list)]
-            if picked.Rarity.Value == rarity then
+            if picked.Rarity == rarity then
                 return picked.Name
             else
                 task.wait()

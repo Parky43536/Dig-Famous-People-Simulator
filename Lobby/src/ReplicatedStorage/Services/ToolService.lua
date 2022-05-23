@@ -3,6 +3,8 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 
+local Assets = ReplicatedStorage.Assets
+
 local Physics = ReplicatedStorage:WaitForChild("Physics")
 local ExplosionService
 
@@ -10,14 +12,11 @@ local SerServices = ServerScriptService.Services
 local DataManager
 
 local Utility = ReplicatedStorage:WaitForChild("Utility")
-local ToolFunctions = require(Utility:WaitForChild("ToolFunctions"))
 local CharacterService = require(Utility:WaitForChild("CharacterService"))
 
 local DataBase = ReplicatedStorage.Database
 local ShovelData = require(DataBase:WaitForChild("ShovelData"))
-
-local Assets = ReplicatedStorage.Assets
-local FamousData = ReplicatedStorage.Database.FamousData
+local FamousData = require(DataBase:WaitForChild("FamousData"))
 
 local ToolService = {}
 
@@ -59,6 +58,20 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
     local Humanoid = Character.Humanoid
     local ToolEquipped = false
 
+    local function Create(ty)
+        return function(data)
+            local obj = Instance.new(ty)
+            for k, v in pairs(data) do
+                if type(k) == 'number' then
+                    v.Parent = obj
+                else
+                    obj[k] = v
+                end
+            end
+            return obj
+        end
+    end
+
     local Sounds = {
         Dig = Handle:WaitForChild("Dig")
     }
@@ -81,7 +94,7 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
         Sounds.Dig:Play()
 
         if Humanoid then
-            local Anim = (Tool:FindFirstChild("Slash") or ToolFunctions:Create("Animation"){
+            local Anim = (Tool:FindFirstChild("Slash") or Create("Animation"){
                 Name = "Slash",
                 AnimationId = "rbxassetid://" .. Animations.Slash,
                 Parent = Tool
@@ -140,19 +153,22 @@ function ToolService:CreateFamous(player, famousType)
 end
 
 function ToolService:LoadFamous(player, famous)
-    local Tool = Assets.Famous.Tool:Clone()
-    local famousStats = FamousData:FindFirstChild(famous.famousType)
+    local famousStats = FamousData[famous.famousType]
+    if famousStats then
+        local Tool = Assets.Famous.Tool:Clone()
 
-    ToolFunctions:ReadyTool(Tool, famous, famousStats)
+        CharacterService:CreateCharacterIcon(Tool, famous.famousType)
+        CharacterService:CreateCharacterRig(Tool, famous.famousType)
 
-    CharacterService:CreateCharacter(Tool.Handle, famous.famousType)
+        Tool.ToolTip = Players:GetNameFromUserIdAsync(famous.famousType) .. ", " .. famousStats.Rarity
 
-    if not Loaded[player] then
-        repeat task.wait(1) until Loaded[player]
+        if not Loaded[player] then
+            repeat task.wait(1) until Loaded[player]
+        end
+        Tool.Parent = player.Backpack
+
+        ToolService:FamousManager(player, Tool, famous, famousStats)
     end
-    Tool.Parent = player.Backpack
-
-    ToolService:FamousManager(player, Tool, famous, famousStats)
 end
 
 function ToolService:FamousManager(player, Tool, famous, famousStats)
@@ -170,7 +186,10 @@ function ToolService:FamousManager(player, Tool, famous, famousStats)
             return
         end
 
-        Handle.Character.Humanoid.PlatformStand = true
+        local rig = Handle:FindFirstChildOfClass("Model")
+        if rig then
+            rig.Humanoid.PlatformStand = true
+        end
 
         EquippedTracker[player] = {dataType = "Famous", data = famous, tool = Tool}
     end
