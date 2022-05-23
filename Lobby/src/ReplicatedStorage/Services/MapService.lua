@@ -15,6 +15,7 @@ local CharacterService = require(Utility:WaitForChild("CharacterService"))
 
 local MapService = {}
 local FamousPrompts = {}
+local ChestPrompts = {}
 
 local rayCastParams = RaycastParams.new()
 rayCastParams.FilterType = Enum.RaycastFilterType.Blacklist
@@ -31,9 +32,14 @@ local directions = {
 MapService.chances = {
     Mythic = 10000,
     Legendary = 3000,
-    Epic = 1500,
+    Epic = 1000,
     Rare = 500,
     Common = 100,
+
+    GoldChestLegendary = 3000,
+    GoldChestRare = 500,
+    GoldChestCommon = 100,
+
     Crystal = 30,
     Variety = 3,
 }
@@ -84,6 +90,8 @@ function MapService:RoundDeci(n: number, decimal: number)
 end
 
 function MapService:ChanceParts(chanceParts)
+    local rng = Random.new()
+
     local function famousHandler(tabler, rarity)
         for _,part in pairs(tabler) do
             if coveredPart(part) then
@@ -110,6 +118,37 @@ function MapService:ChanceParts(chanceParts)
         end
     end
 
+    local function chestHandler(tabler, rarity)
+        for _,part in pairs(tabler) do
+            if coveredPart(part) then
+                local chest = Assets.Chests:FindFirstChild(rarity):Clone()
+                chest:PivotTo(part.CFrame * CFrame.Angles(0, math.random(0, 360), 0))
+                chest.Parent = part.Parent
+                part:Destroy()
+
+                local gold = 0
+                if rarity == "GoldChestLegendary" then
+                    gold = rng:NextInteger(2500, 5000)
+                elseif rarity == "GoldChestRare" then
+                    gold = rng:NextInteger(250, 500)
+                elseif rarity == "GoldChestCommon" then
+                    gold = rng:NextInteger(100, 200)
+                end
+
+                chest.Root.ChestPrompt.ObjectText = string.gsub(rarity, "GoldChest", "") .. ", " .. MapService:RoundDeci(1 / MapService.chances[rarity] * 5000, 2) .. "%"
+                chest.Root.ChestPrompt.ActionText = "Collect " .. gold .. " Gold"
+
+                local chestPrompt = {
+                    prompt = chest.PrimaryPart.ChestPrompt,
+                    rarity = rarity,
+                    gold = gold,
+                    model = chest,
+                }
+                table.insert(ChestPrompts, chestPrompt)
+            end
+        end
+    end
+
     if chanceParts.Mythic then
         famousHandler(chanceParts.Mythic, "Mythic")
     end
@@ -128,6 +167,18 @@ function MapService:ChanceParts(chanceParts)
 
     if chanceParts.Common then
         famousHandler(chanceParts.Common, "Common")
+    end
+
+    if chanceParts.GoldChestLegendary then
+        chestHandler(chanceParts.GoldChestLegendary, "GoldChestLegendary")
+    end
+
+    if chanceParts.GoldChestRare then
+        chestHandler(chanceParts.GoldChestRare, "GoldChestRare")
+    end
+
+    if chanceParts.GoldChestCommon then
+        chestHandler(chanceParts.GoldChestCommon, "GoldChestCommon")
     end
 
     if chanceParts.Crystal then
@@ -167,6 +218,20 @@ function MapService:ProcessFamous(player, promptObject)
                 else
                     promptData.processing = nil
                 end
+            end
+        end
+    end
+end
+
+function MapService:ProcessChest(player, promptObject)
+    for key, promptData in pairs(ChestPrompts) do
+        if promptData.prompt == promptObject then
+            if not promptData.processing then
+                promptData.processing = true
+
+                promptData.model:Destroy()
+                table.remove(ChestPrompts, key)
+                return true
             end
         end
     end

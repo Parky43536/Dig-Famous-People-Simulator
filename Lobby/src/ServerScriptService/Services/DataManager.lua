@@ -7,7 +7,8 @@ local Helpers = ReplicatedStorage.Helpers
 local ErrorCodeHelper = require(Helpers.ErrorCodeHelper)
 
 local RepServices = ReplicatedStorage.Services
-local ToolService = require(RepServices.ToolService)
+local ToolService = require(RepServices:WaitForChild("ToolService"))
+local PlayerValues = require(RepServices:WaitForChild("PlayerValues"))
 
 local SerServices = ServerScriptService.Services
 local DataStorage = SerServices.DataStorage

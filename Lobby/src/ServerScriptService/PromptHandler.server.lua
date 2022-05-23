@@ -10,6 +10,8 @@ local function onPromptTriggered(promptObject, player)
 		ToolService:DeleteEquippedTool(player)
 	elseif promptObject.Name == "FamousPrompt" then
 		MapService:ProcessFamous(player, promptObject)
+	elseif promptObject.Name == "ChestPrompt" then
+		MapService:ProcessChest(player, promptObject)
 	end
 end
 
