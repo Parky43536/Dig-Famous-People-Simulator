@@ -139,7 +139,7 @@ function MapService:ChanceParts(chanceParts)
                 if rarity == "GoldChestLegendary" then
                     gold = rng:NextInteger(2500, 5000)
                 elseif rarity == "GoldChestRare" then
-                    gold = rng:NextInteger(250, 500)
+                    gold = rng:NextInteger(500, 1000)
                 elseif rarity == "GoldChestCommon" then
                     gold = rng:NextInteger(100, 200)
                 end
