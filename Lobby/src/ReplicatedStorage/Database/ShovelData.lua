@@ -83,17 +83,87 @@ local ShovelData = {
 		}
 	},
 
-	["Godly Shovel"] = {
+	["Adurite Shovel"] = {
 		id = 7,
+		Cost = 200000,
+		Color = Color3.fromRGB(136, 0, 0),
+		Stats = {
+			Reload = 1.2,
+			Dig = 10,
+			Speed = 18,
+			Jump = 8,
+			GMulti = 1.4,
+			Luck = 1.4,
+		}
+	},
+
+	["Emerald Shovel"] = {
+		id = 8,
+		Cost = 350000,
+		Color = Color3.fromRGB(9, 255, 0),
+		Stats = {
+			Reload = 1.2,
+			Dig = 11,
+			Speed = 20,
+			Jump = 10,
+			GMulti = 1,
+			Luck = 2,
+		}
+	},
+
+	["Bombastic Shovel"] = {
+		id = 9,
+		Cost = 600000,
+		Color = Color3.fromRGB(255, 115, 0),
+		Stats = {
+			Reload = 1.5,
+			Dig = 16,
+			Speed = 20,
+			Jump = 10,
+			GMulti = 2,
+			Luck = 1,
+		}
+	},
+
+	["Electric Shovel"] = {
+		id = 10,
+		Cost = 1000000,
+		Color = Color3.fromRGB(0, 217, 255),
+		Stats = {
+			Reload = 0.9,
+			Dig = 11,
+			Speed = 40,
+			Jump = 10,
+			GMulti = 1.5,
+			Luck = 1.5,
+		}
+	},
+
+	["Galactic Shovel"] = {
+		id = 11,
+		Cost = 1500000,
+		Color = Color3.fromRGB(159, 0, 173),
+		Stats = {
+			Reload = 0.9,
+			Dig = 12,
+			Speed = 20,
+			Jump = 40,
+			GMulti = 1.5,
+			Luck = 1.5,
+		}
+	},
+
+	["Godly Shovel"] = {
+		id = 12,
 		Cost = 100000000,
 		Color = Color3.fromRGB(255, 255, 255),
 		Stats = {
-			Reload = 1,
+			Reload = 0.8,
 			Dig = 15,
 			Speed = 30,
-			Jump = 20,
-			GMulti = 1.5,
-			Luck = 1.5,
+			Jump = 30,
+			GMulti = 1.6,
+			Luck = 1.6,
 		}
 	},
 }

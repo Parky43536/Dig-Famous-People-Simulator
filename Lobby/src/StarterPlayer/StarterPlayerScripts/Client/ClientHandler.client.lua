@@ -24,6 +24,6 @@ SideFrame.Spawn.Activated:Connect(function()
     local character = LocalPlayer.Character
     if character and character.Parent ~= nil then
         local rng = Random.new()
-        character:PivotTo(workspace.Spawn.SpawnLocation.CFrame + Vector3.new(rng:NextInteger(-8, 8), 4, rng:NextInteger(-8, 8)))
+        character:PivotTo(workspace.Game.SpawnLocation.CFrame + Vector3.new(rng:NextInteger(-8, 8), 4, rng:NextInteger(-8, 8)))
     end
 end)
