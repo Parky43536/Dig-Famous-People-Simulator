@@ -55,7 +55,7 @@ end
 
 local ExplosionService = {}
 
-function ExplosionService.create(position, radius, force, client)
+function ExplosionService.create(player, position, radius, force, client)
 	if not IsServer then
 		Signal:FireServer(position, radius, force)
 		return
@@ -68,14 +68,14 @@ function ExplosionService.create(position, radius, force, client)
 
 	local nearbyParts = getNearbyParts(position, radius, filteredInstances)
 	for _,part in pairs(nearbyParts) do
-		local player = game.Players:GetPlayerFromCharacter(part.Parent) or game.Players:GetPlayerFromCharacter(part.Parent.Parent)
+		local hitPlayer = game.Players:GetPlayerFromCharacter(part.Parent) or game.Players:GetPlayerFromCharacter(part.Parent.Parent)
 		
 		if not CollectionService:HasTag(part, "Processing") then
 			if CollectionService:HasTag(part, "Breakable") then
 				CollectionService:AddTag(part, "Processing")
 
 				task.spawn(function()
-					local splitModel, splitSeed = BreakService.split(part)
+					local splitModel, splitSeed = BreakService.split(player, part)
 					local filteredDescendants = splitModel:GetChildren()
 				
 					local inRange = getNearbyParts(position, radius, filteredDescendants)
@@ -83,7 +83,7 @@ function ExplosionService.create(position, radius, force, client)
 						task.defer(setPartVelocity, splitPart, position, force)
 					end
 				end)
-			elseif not player then
+			elseif not hitPlayer then
 				task.defer(setPartVelocity, part, position, force)
 			end
 		end

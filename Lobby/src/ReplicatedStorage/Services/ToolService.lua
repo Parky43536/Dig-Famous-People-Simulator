@@ -11,6 +11,7 @@ local SerServices = ServerScriptService.Services
 local DataManager
 
 local RepServices = ReplicatedStorage.Services
+local PlayerValues = require(RepServices:WaitForChild("PlayerValues"))
 local MapService
 
 local Utility = ReplicatedStorage:WaitForChild("Utility")
@@ -82,7 +83,7 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
 
     local function Dig()
         if not ExplosionService then ExplosionService = require(Physics.ExplosionService) end
-        ExplosionService.create(Handle.Position, shovelStats.Stats.Dig, 10)
+        ExplosionService.create(player, Handle.Position, shovelStats.Stats.Dig, 10)
 
         Sounds.Dig:Play()
 
@@ -117,6 +118,8 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
 
         Humanoid.WalkSpeed = shovelStats.Stats.Speed
         Humanoid.JumpHeight = shovelStats.Stats.Jump
+        PlayerValues:SetValue(player, "GMulti", shovelStats.Stats.GMulti)
+        PlayerValues:SetValue(player, "Luck", shovelStats.Stats.Luck)
 
         EquippedTracker[player] = {dataType = "Shovels", data = shovel, tool = Tool}
         ToolEquipped = true
@@ -125,6 +128,8 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
     local function Unequipped()
         Humanoid.WalkSpeed = ShovelData["Default Shovel"].Stats.Speed
         Humanoid.JumpHeight = ShovelData["Default Shovel"].Stats.Jump
+        PlayerValues:SetValue(player, "GMulti", ShovelData["Default Shovel"].Stats.GMulti)
+        PlayerValues:SetValue(player, "Luck", ShovelData["Default Shovel"].Stats.Luck)
         ToolEquipped = false
         EquippedTracker[player] = nil
     end
@@ -203,6 +208,8 @@ function ToolService:DeleteEquippedTool(player)
             local Humanoid = Character.Humanoid
             Humanoid.WalkSpeed = ShovelData["Default Shovel"].Stats.Speed
             Humanoid.JumpHeight = ShovelData["Default Shovel"].Stats.Jump
+            PlayerValues:SetValue(player, "GMulti", ShovelData["Default Shovel"].Stats.GMulti)
+            PlayerValues:SetValue(player, "Luck", ShovelData["Default Shovel"].Stats.Luck)
         end
     end
 end

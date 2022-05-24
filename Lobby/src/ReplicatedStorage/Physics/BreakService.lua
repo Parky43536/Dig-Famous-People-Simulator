@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local RepServices = ReplicatedStorage.Services
 local MapService = require(RepServices.MapService)
+local PlayerValues = require(RepServices.PlayerValues)
 
 local SCALING_CONSTANT = 3
 local ABSOLUTE_MAX_COMBINE = 8
@@ -84,7 +85,7 @@ local function combineParts(model, parts, cubeSize, originalPart)
 	CollectionService:AddTag(newPart, "Destructable")
 end
 
-local function makeRemainingParts(model, parts, cubeSize, originalPart)
+local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 	local chanceParts = {}
 
 	for _,part in pairs(parts) do
@@ -125,7 +126,7 @@ local function makeRemainingParts(model, parts, cubeSize, originalPart)
 			for key, chance in pairs(MapService.chances) do
 				if not chanceParts[key] then chanceParts[key] = {} end
 
-				if rng:NextInteger(1, chance) == 1 then
+				if rng:NextInteger(1, chance) <= 1 * (PlayerValues:GetValue(player, "Luck") * 2) then
 					table.insert(chanceParts[key], newPart)
 					break
 				end
@@ -198,7 +199,7 @@ local function getAvailableSize(parts, randomGenerator, x, y, z, maxValues)
 end
 
 local BreakService = {}
-function BreakService.split(part, randomSeed, optionalModel)
+function BreakService.split(player, part, randomSeed, optionalModel)
 	local seed = randomSeed or os.time() + math.random(-100000,100000)
 	local randomGenerator = Random.new(seed)
 	local randomObject = {
@@ -207,15 +208,15 @@ function BreakService.split(part, randomSeed, optionalModel)
 	}
 	
 	if part.ClassName == "Part" then
-		return BreakService.splitRectangle(part, randomObject, optionalModel), seed
+		return BreakService.splitRectangle(player, part, randomObject, optionalModel), seed
 	elseif part.ClassName == "WedgePart" then
-		return BreakService.splitWedge(part, randomObject, optionalModel), seed
+		return BreakService.splitWedge(player, part, randomObject, optionalModel), seed
 	end
 	
 	warn(part, part.ClassName)
 end
 
-function BreakService.splitRectangle(part, randomObject)
+function BreakService.splitRectangle(player, part, randomObject)
 	local model = Instance.new("Model")
 	
 	local partSizeMagnitude = part.Size.Magnitude
@@ -284,7 +285,7 @@ function BreakService.splitRectangle(part, randomObject)
 		end
 	end
 
-	local chanceParts = makeRemainingParts(model, uncombinedParts, cubeSize, part)
+	local chanceParts = makeRemainingParts(player, model, uncombinedParts, cubeSize, part)
 
 	model:PivotTo(part:GetPivot())
 	model.Parent = part.Parent
@@ -295,7 +296,7 @@ function BreakService.splitRectangle(part, randomObject)
 	return model
 end
 
-function BreakService.splitWedge(part, randomObject, optionalModel)
+function BreakService.splitWedge(player, part, randomObject, optionalModel)
 	local model = optionalModel or Instance.new("Model")
 	if not optionalModel then
 		model.Parent = part.Parent

@@ -270,9 +270,43 @@ local function teleportPlayers()
     end
 end
 
+local function initalizeShovels()
+    for _,stand in pairs(workspace.Map.Shovels:GetChildren()) do
+        local shovelData = ShovelData[stand.Name]
+        if shovelData then
+            local Shovel = Assets.Shovels:FindFirstChild(stand.Name).Shovel:Clone()
+            Shovel:PivotTo(stand.ShovelHolder.CFrame)
+            Shovel.Anchored = true
+            Shovel.Parent = stand.ShovelHolder
+
+            stand.ShovelName.SurfaceGui.Frame.TextLabel.Text = stand.Name
+            stand.ShovelName.Color = shovelData.Color
+
+            stand.Reload.SurfaceGui.Frame.TextLabel.Text = "Reload:\n" .. shovelData.Stats.Reload
+            stand.Dig.SurfaceGui.Frame.TextLabel.Text = "Dig:\n" .. shovelData.Stats.Dig
+            stand.Speed.SurfaceGui.Frame.TextLabel.Text = "Speed:\n" .. shovelData.Stats.Speed
+            stand.Jump.SurfaceGui.Frame.TextLabel.Text = "Jump:\n" .. shovelData.Stats.Jump
+            stand.GMulti.SurfaceGui.Frame.TextLabel.Text = "G Multi:\n" .. shovelData.Stats.GMulti
+            stand.Luck.SurfaceGui.Frame.TextLabel.Text = "Luck:\n" .. shovelData.Stats.Luck
+
+            stand.ShovelHolder.ShovelPrompt.ObjectText = stand.Name
+            stand.ShovelHolder.ShovelPrompt.ActionText = "Buy for " .. shovelData.Cost .. " Gold?"
+
+            local shovelPrompt = {
+                prompt = stand.ShovelHolder.ShovelPrompt,
+                shovelType = stand.Name,
+                cost = shovelData.Cost,
+                model = stand,
+            }
+            table.insert(ShovelPrompts, shovelPrompt)
+        end
+    end
+end
+
 local function newMap()
     FamousPrompts = {}
     ChestPrompts = {}
+    ShovelPrompts = {}
 
 	Map = Assets.Maps.Map:Clone()
 	Map.Parent = workspace
@@ -314,42 +348,11 @@ local function newMap()
 			end
 		end
 	end
-end
 
-local function initalizeShovels()
-    for _,stand in pairs(workspace.Shovels:GetChildren()) do
-        local shovelData = ShovelData[stand.Name]
-        if shovelData then
-            local Shovel = Assets.Shovels:FindFirstChild(stand.Name).Shovel:Clone()
-            Shovel:PivotTo(stand.ShovelHolder.CFrame)
-            Shovel.Anchored = true
-            Shovel.Parent = stand.ShovelHolder
-
-            stand.ShovelName.SurfaceGui.Frame.TextLabel.Text = stand.Name
-            stand.ShovelName.Color = shovelData.Color
-
-            stand.Reload.SurfaceGui.Frame.TextLabel.Text = "Reload:\n" .. shovelData.Stats.Reload
-            stand.Dig.SurfaceGui.Frame.TextLabel.Text = "Dig:\n" .. shovelData.Stats.Dig
-            stand.Speed.SurfaceGui.Frame.TextLabel.Text = "Speed:\n" .. shovelData.Stats.Speed
-            stand.Jump.SurfaceGui.Frame.TextLabel.Text = "Jump:\n" .. shovelData.Stats.Jump
-
-            stand.ShovelHolder.ShovelPrompt.ObjectText = stand.Name
-            stand.ShovelHolder.ShovelPrompt.ActionText = "Buy for " .. shovelData.Cost .. " Gold?"
-
-            local shovelPrompt = {
-                prompt = stand.ShovelHolder.ShovelPrompt,
-                shovelType = stand.Name,
-                cost = shovelData.Cost,
-                model = stand,
-            }
-            table.insert(ShovelPrompts, shovelPrompt)
-        end
-    end
+    initalizeShovels()
 end
 
 task.spawn(function()
-    initalizeShovels()
-
     while true do
         if Values.MapTimer.Value <= 0 then
             if Map then

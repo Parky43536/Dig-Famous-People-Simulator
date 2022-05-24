@@ -101,7 +101,9 @@ function DataManager:InitalizeLife(player)
 			DataManager:NewShovel(player, "Default Shovel")
 		end
 
-		PlayerValues:SetValue(player, "Gold", playerProfile.Data.Gold, true)
+		task.spawn(function()
+			PlayerValues:SetValue(player, "Gold", playerProfile.Data.Gold, true)
+		end)
 
 		ClientService.InitializeTools(player, playerProfile)
 	end
@@ -174,6 +176,8 @@ function DataManager:DeleteTool(player, dataType, uniqueId)
 end
 
 function DataManager:GiveGold(player, gold)
+	gold = math.floor(gold * PlayerValues:GetValue(player, "GMulti"))
+
 	DataManager:IncrementValue(player, "Gold", gold)
 	PlayerValues:IncrementValue(player, "Gold", gold, true)
 end
