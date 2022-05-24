@@ -282,7 +282,6 @@ end
 local function newMap()
     FamousPrompts = {}
     ChestPrompts = {}
-    ShovelPrompts = {}
 
 	Map = Assets.Maps.Map:Clone()
 	Map.Parent = workspace
