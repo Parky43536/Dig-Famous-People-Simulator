@@ -250,16 +250,7 @@ end
 function MapService:ProcessShovel(player, promptObject)
     for key, promptData in pairs(ShovelPrompts) do
         if promptData.prompt == promptObject then
-            if not promptData.processing then
-                promptData.processing = true
-
-                local added = DataManager:NewShovel(player, promptData.shovelType, promptData.cost)
-                if added then
-                    return true
-                else
-                    promptData.processing = nil
-                end
-            end
+            DataManager:NewShovel(player, promptData.shovelType, promptData.cost)
         end
     end
 end
