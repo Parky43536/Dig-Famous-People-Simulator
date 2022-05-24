@@ -12,6 +12,8 @@ local function onPromptTriggered(promptObject, player)
 		MapService:ProcessFamous(player, promptObject)
 	elseif promptObject.Name == "ChestPrompt" then
 		MapService:ProcessChest(player, promptObject)
+	elseif promptObject.Name == "ShovelPrompt" then
+		MapService:ProcessShovel(player, promptObject)
 	end
 end
 

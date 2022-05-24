@@ -2,6 +2,7 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
 
 local Helpers = ReplicatedStorage.Helpers
 local ErrorCodeHelper = require(Helpers.ErrorCodeHelper)
@@ -9,6 +10,10 @@ local ErrorCodeHelper = require(Helpers.ErrorCodeHelper)
 local RepServices = ReplicatedStorage.Services
 local ToolService = require(RepServices:WaitForChild("ToolService"))
 local PlayerValues = require(RepServices:WaitForChild("PlayerValues"))
+
+local DataBase = ReplicatedStorage.Database
+local ShovelData = require(DataBase:WaitForChild("ShovelData"))
+local FamousData = require(DataBase:WaitForChild("FamousData"))
 
 local SerServices = ServerScriptService.Services
 local DataStorage = SerServices.DataStorage
@@ -93,34 +98,58 @@ function DataManager:InitalizeLife(player)
 
 	if playerProfile then
 		if next(playerProfile.Data.Shovels) == nil then
-			DataManager:NewShovel(player, "Default")
+			DataManager:NewShovel(player, "Default Shovel", true)
 		end
+
+		PlayerValues:SetValue(player, "Gold", playerProfile.Data.Gold, true)
 
 		ClientService.InitializeTools(player, playerProfile)
 	end
 end
 
-function DataManager:NewShovel(player, shovelType)
-    local playerProfile = self:GetProfile(player)
+function DataManager:NewShovel(player, shovelType, cost)
+	local playerProfile = self:GetProfile(player)
+	local shovelData = ShovelData[shovelType]
 
-	if playerProfile then
-		local newShovel = ToolService:CreateShovel(player, shovelType)
+	if playerProfile and shovelData then
+		if cost then
+			if playerProfile.Data.Gold >= cost then
+				DataManager:GiveGold(player, -cost)
+			else
+				return false
+			end
+		end
 
-		table.insert(playerProfile.Data.Shovels, newShovel)
+		if not playerProfile.Data.Shovels[tostring(shovelData.id)] then
+			playerProfile.Data.Shovels[tostring(shovelData.id)] = {}
+		end
 
-		return newShovel
+		local uniqueId = HttpService:GenerateGUID(false)
+		table.insert(playerProfile.Data.Shovels[tostring(shovelData.id)], uniqueId)
+
+		if cost then
+			ToolService:LoadShovel(player, shovelType, uniqueId)
+		end
+
+		return playerProfile.Data.Shovels[tostring(shovelData.id)]
 	end
 end
 
 function DataManager:NewFamous(player, famousType)
     local playerProfile = self:GetProfile(player)
+	local famousData = FamousData[famousType]
 
-	if playerProfile then
-		local newFamous = ToolService:CreateFamous(player, famousType)
+	if playerProfile and famousData then
+		if not playerProfile.Data.Famous[tostring(famousData.id)] then
+			playerProfile.Data.Famous[tostring(famousData.id)] = {}
+		end
 
-		table.insert(playerProfile.Data.Famous, newFamous)
+		local uniqueId = HttpService:GenerateGUID(false)
+		table.insert(playerProfile.Data.Famous[tostring(famousData.id)], uniqueId)
 
-		return newFamous
+		ToolService:LoadFamous(player, famousType, uniqueId)
+
+		return playerProfile.Data.Famous[tostring(famousData.id)]
 	end
 end
 
@@ -128,13 +157,25 @@ function DataManager:DeleteTool(player, dataType, uniqueId)
 	local playerProfile = self:GetProfile(player)
 
 	if playerProfile then
-		for key, tool in pairs(playerProfile.Data[dataType]) do
-			if tool.uniqueId == uniqueId then
-				table.remove(playerProfile.Data[dataType], key)
-				return true
+		for id, uniqueIds in pairs(playerProfile.Data[dataType]) do
+			for key, dataUniqueId in pairs(uniqueIds) do
+				if tostring(dataUniqueId) == tostring(uniqueId) then
+					table.remove(playerProfile.Data[dataType][id], key)
+
+					if next(playerProfile.Data[dataType][id]) == nil then
+						playerProfile.Data[dataType][id] = nil
+					end
+
+					return true
+				end
 			end
 		end
 	end
+end
+
+function DataManager:GiveGold(player, gold)
+	DataManager:IncrementValue(player, "Gold", gold)
+	PlayerValues:IncrementValue(player, "Gold", gold, true)
 end
 
 return DataManager

@@ -1,10 +1,17 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
+local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 
 local Assets = ReplicatedStorage.Assets
+local Values = ReplicatedStorage.Values
+
+local Physics = ReplicatedStorage.Physics
+local PartManager = require(Physics.PartManager)
+local ChunkService = require(Physics.ChunkService)
 
 local DataBase = ReplicatedStorage.Database
+local ShovelData = require(DataBase:WaitForChild("ShovelData"))
 local FamousData = require(DataBase:WaitForChild("FamousData"))
 
 local SerServices = ServerScriptService.Services
@@ -16,6 +23,7 @@ local CharacterService = require(Utility:WaitForChild("CharacterService"))
 local MapService = {}
 local FamousPrompts = {}
 local ChestPrompts = {}
+local ShovelPrompts = {}
 
 local rayCastParams = RaycastParams.new()
 rayCastParams.FilterType = Enum.RaycastFilterType.Blacklist
@@ -43,6 +51,7 @@ MapService.chances = {
     Crystal = 30,
     Variety = 3,
 }
+
 local function coveredPart(part)
 	local position = part.Position
 	local returnTable = directions
@@ -229,6 +238,7 @@ function MapService:ProcessChest(player, promptObject)
             if not promptData.processing then
                 promptData.processing = true
 
+                DataManager:GiveGold(player, promptData.gold)
                 promptData.model:Destroy()
                 table.remove(ChestPrompts, key)
                 return true
@@ -236,5 +246,135 @@ function MapService:ProcessChest(player, promptObject)
         end
     end
 end
+
+function MapService:ProcessShovel(player, promptObject)
+    for key, promptData in pairs(ShovelPrompts) do
+        if promptData.prompt == promptObject then
+            if not promptData.processing then
+                promptData.processing = true
+
+                local added = DataManager:NewShovel(player, promptData.shovelType, promptData.cost)
+                if added then
+                    return true
+                else
+                    promptData.processing = nil
+                end
+            end
+        end
+    end
+end
+
+---------------------------------------------------------
+
+local Map
+local MapTimer = 300
+
+local function teleportPlayers()
+    for _,player in pairs(Players:GetChildren()) do
+        local character = player.Character
+        if character and character.Parent ~= nil then
+            local rng = Random.new()
+            character:PivotTo(workspace.Spawn.SpawnLocation.CFrame + Vector3.new(rng:NextInteger(-8, 8), 4, rng:NextInteger(-8, 8)))
+        end
+    end
+end
+
+local function newMap()
+    FamousPrompts = {}
+    ChestPrompts = {}
+    ShovelPrompts = {}
+
+	Map = Assets.Maps.Map:Clone()
+	Map.Parent = workspace
+
+	for _,object in pairs(Map:GetDescendants()) do
+		if object:IsA("BasePart") then
+			if not CollectionService:HasTag(object, "Permanent") then
+				CollectionService:RemoveTag(object, "Destructable")
+				CollectionService:RemoveTag(object, "Breakable")
+
+				PartManager.addPart(object)
+
+				local multiplyVector = Vector3.new(1,1,1)
+				local isSplitablePart = false
+
+				if object.ClassName == "Part" then
+					if object.Shape == Enum.PartType.Cylinder then
+						continue
+					end
+
+					multiplyVector = Vector3.new(1,1,1)
+					isSplitablePart = true
+				elseif object.ClassName == "WedgePart" then
+					multiplyVector = Vector3.new(0,1,1)
+					isSplitablePart = true
+				end
+
+				local objectAdjustedSize = object.Size * multiplyVector
+				if objectAdjustedSize.Magnitude <= 15 or (object.ClassName ~= "Part" and object.ClassName ~= "WedgePart") then
+					CollectionService:AddTag(object, "Destructable")
+				elseif objectAdjustedSize.Magnitude >= 50 and isSplitablePart then
+					local chunkModel = ChunkService.makeChunks(object)
+					for _,chunk in pairs(chunkModel:GetChildren()) do
+						PartManager.addPart(chunk)
+					end
+				else
+					CollectionService:AddTag(object, "Breakable")
+				end
+			end
+		end
+	end
+end
+
+local function initalizeShovels()
+    for _,stand in pairs(workspace.Shovels:GetChildren()) do
+        local shovelData = ShovelData[stand.Name]
+        if shovelData then
+            local Shovel = Assets.Shovels:FindFirstChild(stand.Name).Shovel:Clone()
+            Shovel:PivotTo(stand.ShovelHolder.CFrame)
+            Shovel.Anchored = true
+            Shovel.Parent = stand.ShovelHolder
+
+            stand.ShovelName.SurfaceGui.Frame.TextLabel.Text = stand.Name
+            stand.ShovelName.Color = shovelData.Color
+
+            stand.Reload.SurfaceGui.Frame.TextLabel.Text = "Reload:\n" .. shovelData.Stats.Reload
+            stand.Dig.SurfaceGui.Frame.TextLabel.Text = "Dig:\n" .. shovelData.Stats.Dig
+            stand.Speed.SurfaceGui.Frame.TextLabel.Text = "Speed:\n" .. shovelData.Stats.Speed
+            stand.Jump.SurfaceGui.Frame.TextLabel.Text = "Jump:\n" .. shovelData.Stats.Jump
+
+            stand.ShovelHolder.ShovelPrompt.ObjectText = stand.Name
+            stand.ShovelHolder.ShovelPrompt.ActionText = "Buy for " .. shovelData.Cost .. " Gold?"
+
+            local shovelPrompt = {
+                prompt = stand.ShovelHolder.ShovelPrompt,
+                shovelType = stand.Name,
+                cost = shovelData.Cost,
+                model = stand,
+            }
+            table.insert(ShovelPrompts, shovelPrompt)
+        end
+    end
+end
+
+task.spawn(function()
+    initalizeShovels()
+
+    while true do
+        if Values.MapTimer.Value <= 0 then
+            if Map then
+                Map:Destroy()
+            end
+            teleportPlayers()
+            newMap()
+
+            Values.MapTimer.Value = MapTimer
+        end
+
+        task.wait(1)
+
+        Values.MapTimer.Value -= 1
+    end
+end)
 
 return MapService

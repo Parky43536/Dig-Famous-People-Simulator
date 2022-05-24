@@ -16,7 +16,7 @@ local function toHMS(s)
 end
 
 Values.MapTimer.Changed:Connect(function(value)
-	SideFrame.MapTimer.Text = "Map Timer " .. toHMS(value)
+	SideFrame.MapTimer.Text = "Map Timer: " .. toHMS(value)
 end)
 
 

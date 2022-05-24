@@ -24,18 +24,11 @@ local function playerAdded(newPlayer)
         warn("Could not load player profile")
     end
 
-    local function runInit(newCharacter)
+    newPlayer.CharacterAdded:Connect(function(newCharacter)
         DataManager:InitalizeLife(newPlayer)
 
         local light = Instance.new("PointLight")
         light.Parent = newCharacter.PrimaryPart
-    end
-
-    if newPlayer.character then
-        runInit(newPlayer.character)
-    end
-    newPlayer.CharacterAdded:Connect(function(newCharacter)
-        runInit(newCharacter)
     end)
 end
 

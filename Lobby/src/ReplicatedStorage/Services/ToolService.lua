@@ -1,7 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local Players = game:GetService("Players")
-local HttpService = game:GetService("HttpService")
 
 local Assets = ReplicatedStorage.Assets
 
@@ -26,33 +25,24 @@ local ToolService = {}
 local Loaded = {}
 local EquippedTracker = {}
 
-function ToolService:CreateShovel(player, shovelType)
-    local shovel = {
-        uniqueId = HttpService:GenerateGUID(false),
-        shovelType = shovelType,
-    }
+function ToolService:LoadShovel(player, shovelType, uniqueId)
+    local shovelStats = ShovelData[shovelType]
+    if shovelStats then
+        local shovel = {
+            uniqueId = uniqueId,
+            shovelType = shovelType,
+        }
 
-    if shovel.shovelType ~= "Default" then
-        ToolService:LoadShovel(player, shovel)
+        local Tool = Assets.Shovels:FindFirstChild(shovel.shovelType):Clone()
+        Tool.ToolTip = shovel.shovelType
+
+        if not Loaded[player] then
+            repeat task.wait(1) until Loaded[player]
+        end
+        Tool.Parent = player.Backpack
+
+        ToolService:ShovelManager(player, Tool, shovel, shovelStats)
     end
-
-    return shovel
-end
-
-function ToolService:LoadShovel(player, shovel)
-    local Tool = Assets.Shovels:FindFirstChild(shovel.shovelType):Clone()
-    local shovelStats = ShovelData[shovel.shovelType]
-
-    if shovel.shovelType ~= "Default" then
-        Tool.ToolTip = shovel.shovelType .. ", " .. shovelStats.Rarity
-    end
-
-    if not Loaded[player] then
-        repeat task.wait(1) until Loaded[player]
-    end
-    Tool.Parent = player.Backpack
-
-    ToolService:ShovelManager(player, Tool, shovel, shovelStats)
 end
 
 function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
@@ -116,7 +106,7 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
 
         Tool.Enabled = false
         Dig()
-        task.wait(shovelStats.Stats.Cooldown)
+        task.wait(shovelStats.Stats.Reload)
         Tool.Enabled = true
     end
 
@@ -133,8 +123,8 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
     end
 
     local function Unequipped()
-        Humanoid.WalkSpeed = ShovelData["Default"].Stats.Speed
-        Humanoid.JumpHeight = ShovelData["Default"].Stats.Jump
+        Humanoid.WalkSpeed = ShovelData["Default Shovel"].Stats.Speed
+        Humanoid.JumpHeight = ShovelData["Default Shovel"].Stats.Jump
         ToolEquipped = false
         EquippedTracker[player] = nil
     end
@@ -144,20 +134,14 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
     Tool.Unequipped:Connect(Unequipped)
 end
 
-function ToolService:CreateFamous(player, famousType)
-    local famous = {
-        uniqueId = HttpService:GenerateGUID(false),
-        famousType = famousType,
-    }
-
-    ToolService:LoadFamous(player, famous)
-
-    return famous
-end
-
-function ToolService:LoadFamous(player, famous)
-    local famousStats = FamousData[famous.famousType]
+function ToolService:LoadFamous(player, famousType, uniqueId)
+    local famousStats = FamousData[famousType]
     if famousStats then
+        local famous = {
+            uniqueId = uniqueId,
+            famousType = famousType,
+        }
+
         local Tool = Assets.Famous.Tool:Clone()
 
         CharacterService:CreateCharacterIcon(Tool, famous.famousType)
@@ -217,8 +201,8 @@ function ToolService:DeleteEquippedTool(player)
 
             local Character = player.Character
             local Humanoid = Character.Humanoid
-            Humanoid.WalkSpeed = ShovelData["Default"].Stats.Speed
-            Humanoid.JumpHeight = ShovelData["Default"].Stats.Jump
+            Humanoid.WalkSpeed = ShovelData["Default Shovel"].Stats.Speed
+            Humanoid.JumpHeight = ShovelData["Default Shovel"].Stats.Jump
         end
     end
 end
