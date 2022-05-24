@@ -98,7 +98,7 @@ function DataManager:InitalizeLife(player)
 
 	if playerProfile then
 		if next(playerProfile.Data.Shovels) == nil then
-			DataManager:NewShovel(player, "Default Shovel", true)
+			DataManager:NewShovel(player, "Default Shovel")
 		end
 
 		PlayerValues:SetValue(player, "Gold", playerProfile.Data.Gold, true)
