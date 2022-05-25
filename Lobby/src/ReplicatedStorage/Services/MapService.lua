@@ -19,6 +19,7 @@ local DataManager = require(SerServices.DataManager)
 
 local Utility = ReplicatedStorage:WaitForChild("Utility")
 local CharacterService = require(Utility:WaitForChild("CharacterService"))
+local General = require(Utility:WaitForChild("General"))
 
 local MapService = {}
 local FamousPrompts = {}
@@ -35,21 +36,6 @@ local directions = {
 	Back = Vector3.new(0, 0, -1),
 	Right = Vector3.new(0, 1, 0),
 	Left = Vector3.new(0, -1, 0)
-}
-
-MapService.chances = {
-    Mythic = 10000,
-    Legendary = 3000,
-    Epic = 1000,
-    Rare = 500,
-    Common = 100,
-
-    GoldChestLegendary = 3000,
-    GoldChestRare = 500,
-    GoldChestCommon = 100,
-
-    Crystal = 30,
-    Variety = 3,
 }
 
 local function coveredPart(part)
@@ -120,7 +106,7 @@ function MapService:ChanceParts(chanceParts)
 
                     part:Destroy()
 
-                    famous.FamousPrompt.ObjectText = rarity .. ", " .. MapService:RoundDeci(1 / MapService.chances[rarity] * 5000, 2) .. "%"
+                    famous.FamousPrompt.ObjectText = rarity .. ", " .. MapService:RoundDeci(1 / General.ItemChances[rarity] * 5000, 2) .. "%"
                     famous.FamousPrompt.ActionText = "Collect " .. famousStats.Name
 
                     local famousPrompt = {
@@ -158,7 +144,7 @@ function MapService:ChanceParts(chanceParts)
                     gold = rng:NextInteger(100, 200)
                 end
 
-                chest.Root.ChestPrompt.ObjectText = string.gsub(rarity, "GoldChest", "") .. ", " .. MapService:RoundDeci(1 / MapService.chances[rarity] * 5000, 2) .. "%"
+                chest.Root.ChestPrompt.ObjectText = string.gsub(rarity, "GoldChest", "") .. ", " .. MapService:RoundDeci(1 / General.ItemChances[rarity] * 5000, 2) .. "%"
                 chest.Root.ChestPrompt.ActionText = "Collect " .. gold .. " Gold"
 
                 local chestPrompt = {

@@ -9,20 +9,18 @@ local blockedAccessories = {
 	["Jacket-TrenchCoat-White-8648380153"] = true
 }
 
-function CharacterService:CreateCharacterIcon(Tool, userId)
+function CharacterService:CreateCharacterIcon(userId)
 	if not Assets.Storage.Icons:FindFirstChild(userId) then
-		task.spawn(function()
-			local content = Players:GetUserThumbnailAsync(userId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+		local content = Players:GetUserThumbnailAsync(userId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
 
-			Tool.TextureId = content
+		local stringValue = Instance.new("StringValue")
+		stringValue.Value = content
+		stringValue.Name = userId
+		stringValue.Parent = Assets.Storage.Icons
 
-			local stringValue = Instance.new("StringValue")
-			stringValue.Value = content
-			stringValue.Name = userId
-			stringValue.Parent = Assets.Storage.Icons
-		end)
+		return content
 	else
-		Tool.TextureId = Assets.Storage.Icons:FindFirstChild(userId).Value
+		return Assets.Storage.Icons:FindFirstChild(userId).Value
 	end
 end
 

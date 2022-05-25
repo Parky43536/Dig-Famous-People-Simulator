@@ -22,7 +22,7 @@ local FamousData = {
     ["178236960"]= {
         id = 5,
         Name = "DeeterPlays",
-        Rarity = "Common",
+        Rarity = "Rare",
     },
     ["3140542"]= {
         id = 6,
@@ -82,7 +82,7 @@ local FamousData = {
     ["2210737"]= {
         id = 17,
         Name = "wish_z",
-        Rarity = "Rare",
+        Rarity = "Epic",
     },
     ["1123551"]= {
         id = 18,
@@ -97,7 +97,7 @@ local FamousData = {
     ["1912490"]= {
         id = 20,
         Name = "Onett",
-        Rarity = "Epic",
+        Rarity = "Rare",
     },
     ["4225178"]= {
         id = 21,
@@ -122,7 +122,7 @@ local FamousData = {
     ["123247"]= {
         id = 25,
         Name = "alexnewtron",
-        Rarity = "Rare",
+        Rarity = "Common",
     },
     ["63700903"]= {
         id = 26,

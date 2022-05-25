@@ -16,6 +16,7 @@ local MapService
 
 local Utility = ReplicatedStorage:WaitForChild("Utility")
 local CharacterService = require(Utility:WaitForChild("CharacterService"))
+local General = require(Utility:WaitForChild("General"))
 
 local DataBase = ReplicatedStorage.Database
 local ShovelData = require(DataBase:WaitForChild("ShovelData"))
@@ -192,11 +193,14 @@ function ToolService:LoadFamous(player, famousType, uniqueId)
 
         local Tool = Assets.Famous.Tool:Clone()
 
-        CharacterService:CreateCharacterIcon(Tool, famous.famousType)
+        task.spawn(function()
+            Tool.TextureId = CharacterService:CreateCharacterIcon(famous.famousType)
+        end)
+
         CharacterService:CreateCharacterRig(Tool.Handle, famous.famousType)
 
         if not MapService then MapService = require(RepServices.MapService) end
-        Tool.ToolTip = famousStats.Name .. ", " .. famousStats.Rarity .. ", " .. MapService:RoundDeci(1 / MapService.chances[famousStats.Rarity] * 5000, 2) .. "%"
+        Tool.ToolTip = famousStats.Name .. ", " .. famousStats.Rarity .. ", " .. MapService:RoundDeci(1 / General.ItemChances[famousStats.Rarity] * 5000, 2) .. "%"
 
         if not Loaded[player] then
             repeat task.wait(1) until Loaded[player]

@@ -134,6 +134,8 @@ function DataManager:NewFamous(player, famousType)
 
 		ToolService:LoadFamous(player, famousType, uniqueId)
 
+		PlayerValues:SetValue(player, "Famous", playerProfile.Data.Famous, "playerOnly")
+
 		return playerProfile.Data.Famous[tostring(famousData.id)]
 	end
 end
@@ -151,6 +153,10 @@ function DataManager:DeleteTool(player, dataType, uniqueId)
 						playerProfile.Data[dataType][id] = nil
 					end
 
+					if dataType == "Famous" then
+						PlayerValues:SetValue(player, "Famous", playerProfile.Data.Famous, "playerOnly")
+					end
+
 					return true
 				end
 			end
@@ -164,7 +170,7 @@ function DataManager:GiveGold(player, gold)
 	end
 
 	DataManager:IncrementValue(player, "Gold", gold)
-	PlayerValues:IncrementValue(player, "Gold", gold, true)
+	PlayerValues:IncrementValue(player, "Gold", gold, "playerOnly")
 end
 
 return DataManager

@@ -45,9 +45,7 @@ local function showStats(newStats)
 end
 
 PlayerValues:SetCallback("Gold", function(player, value)
-    if player == LocalPlayer then
-        loadGold(value)
-    end
+    loadGold(value)
 end)
 
 ClientConnection.OnClientEvent:Connect(function(action, args)

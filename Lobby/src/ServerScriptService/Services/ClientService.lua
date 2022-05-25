@@ -15,6 +15,7 @@ local FamousData = require(DataBase:WaitForChild("FamousData"))
 
 local Remotes = ReplicatedStorage.Remotes
 local ClientConnection = Remotes.ClientConnection
+local CollectionConnection = Remotes.CollectionConnection
 
 local ClientService = {}
 
@@ -27,9 +28,11 @@ local function getDataById(database, id)
 end
 
 function ClientService.InitializeClient(player, profile)
-    PlayerValues:SetValue(player, "Gold", profile.Data.Gold, true)
+    PlayerValues:SetValue(player, "Gold", profile.Data.Gold, "playerOnly")
+    PlayerValues:SetValue(player, "Famous", profile.Data.Famous, "playerOnly")
 
     ClientConnection:FireClient(player, "loadPlayerValues")
+    CollectionConnection:FireClient(player, "loadPlayerFamous")
 
     -------------------------
 

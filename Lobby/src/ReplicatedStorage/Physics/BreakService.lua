@@ -2,8 +2,11 @@ local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local RepServices = ReplicatedStorage.Services
-local MapService = require(RepServices.MapService)
 local PlayerValues = require(RepServices.PlayerValues)
+local MapService = require(RepServices.MapService)
+
+local Utility = ReplicatedStorage.Utility
+local General = require(Utility.General)
 
 local SCALING_CONSTANT = 3
 local ABSOLUTE_MAX_COMBINE = 8
@@ -123,7 +126,7 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 			newPart.CFrame = CFrame.new(part.Position)
 
 			local rng = Random.new()
-			for key, chance in pairs(MapService.chances) do
+			for key, chance in pairs(General.ItemChances) do
 				if not chanceParts[key] then chanceParts[key] = {} end
 
 				local luckMulti = 1
