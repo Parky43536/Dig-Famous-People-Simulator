@@ -42,6 +42,11 @@ function ClientService.InitializeClient(player, profile)
         DataManager:NewShovel(player, "Default Shovel")
     end
 
+    local character = player.Character
+    if character then
+        ToolService:PlayerStats(player, character.Humanoid)
+    end
+
     for id, uniqueIds in pairs(profile.Data.Shovels) do
         local shovelType, shovelData = getDataById(ShovelData, id)
         if shovelData then

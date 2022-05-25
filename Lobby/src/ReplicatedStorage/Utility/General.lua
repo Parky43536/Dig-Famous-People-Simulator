@@ -18,8 +18,8 @@ General.ItemChances = {
 General.PrestigeBonus = {
 	Speed = 5,
 	Jump = 5,
-	GMulti = 1.5,
-	Luck = 1.5,
+	GMulti = 1,
+	Luck = 1,
 }
 
 General.RarityData = {
