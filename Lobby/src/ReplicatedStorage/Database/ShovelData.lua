@@ -15,7 +15,7 @@ local ShovelData = {
 
 	["Super Shovel"] = {
 		id = 2,
-		Cost = 5000,
+		Cost = 3500,
 		Color = Color3.fromRGB(226, 64, 64),
 		Stats = {
 			Reload = 1.4,
@@ -29,7 +29,7 @@ local ShovelData = {
 
 	["Mega Shovel"] = {
 		id = 3,
-		Cost = 15000,
+		Cost = 10000,
 		Color = Color3.fromRGB(161, 64, 226),
 		Stats = {
 			Reload = 1.3,
@@ -43,7 +43,7 @@ local ShovelData = {
 
 	["Ultra Shovel"] = {
 		id = 4,
-		Cost = 30000,
+		Cost = 25000,
 		Color = Color3.fromRGB(249, 255, 161),
 		Stats = {
 			Reload = 1.2,
@@ -57,7 +57,7 @@ local ShovelData = {
 
 	["Heavy Shovel"] = {
 		id = 5,
-		Cost = 75000,
+		Cost = 70000,
 		Color = Color3.fromRGB(13, 148, 1),
 		Stats = {
 			Reload = 1.5,

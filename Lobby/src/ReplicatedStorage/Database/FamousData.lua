@@ -52,7 +52,7 @@ local FamousData = {
     ["44059064"]= {
         id = 11,
         Name = "Telanthric",
-        Rarity = "Common",
+        Rarity = "Rare",
     },
     ["60596019"]= {
         id = 12,
@@ -177,7 +177,7 @@ local FamousData = {
     ["164626079"]= {
         id = 36,
         Name = "PozziBros",
-        Rarity = "Rare",
+        Rarity = "Common",
     },
     ["166392761"]= {
         id = 37,

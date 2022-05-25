@@ -109,8 +109,15 @@ function MapService:ChanceParts(chanceParts)
                 if chosen and famousStats then
                     local famous = Assets.Famous.FamousHolder:Clone()
                     CharacterService:CreateCharacterRig(famous, chosen)
-                    famous:PivotTo(part.CFrame * CFrame.Angles(0, math.random(0, 360), 0))
-                    famous.Parent = part.Parent
+                    famous:PivotTo(part.CFrame * CFrame.Angles(math.rad(-90), 0, math.rad(math.random(0, 360))))
+
+                    if not workspace.Map:FindFirstChild("ChanceParts") then
+                        local model = Instance.new("Model")
+                        model.Name = "ChanceParts"
+                        model.Parent = workspace.Map
+                    end
+                    famous.Parent =  workspace.Map:FindFirstChild("ChanceParts")
+
                     part:Destroy()
 
                     famous.FamousPrompt.ObjectText = rarity .. ", " .. MapService:RoundDeci(1 / MapService.chances[rarity] * 5000, 2) .. "%"
@@ -131,8 +138,15 @@ function MapService:ChanceParts(chanceParts)
         for _,part in pairs(tabler) do
             if coveredPart(part) then
                 local chest = Assets.Chests:FindFirstChild(rarity):Clone()
-                chest:PivotTo(part.CFrame * CFrame.Angles(0, math.random(0, 360), 0))
-                chest.Parent = part.Parent
+                chest:PivotTo(part.CFrame * CFrame.Angles(0, math.rad(math.random(0, 360)), 0))
+                
+                if not workspace.Map:FindFirstChild("ChanceParts") then
+                    local model = Instance.new("Model")
+                    model.Name = "ChanceParts"
+                    model.Parent = workspace.Map
+                end
+                chest.Parent =  workspace.Map:FindFirstChild("ChanceParts")
+
                 part:Destroy()
 
                 local gold = 0
@@ -265,13 +279,13 @@ local function teleportPlayers()
         local character = player.Character
         if character and character.Parent ~= nil then
             local rng = Random.new()
-            character:PivotTo(workspace.Game.SpawnLocation.CFrame + Vector3.new(rng:NextInteger(-8, 8), 4, rng:NextInteger(-8, 8)))
+            character:PivotTo(workspace.SpawnLocation.CFrame + Vector3.new(rng:NextInteger(-8, 8), 4, rng:NextInteger(-8, 8)))
         end
     end
 end
 
 local function initalizeShovels()
-    for _,stand in pairs(workspace.Shovels:GetChildren()) do
+    for _,stand in pairs(workspace.Map.Shovels:GetChildren()) do
         local shovelData = ShovelData[stand.Name]
         if shovelData then
             local Shovel = Assets.Shovels:FindFirstChild(stand.Name).Shovel:Clone()
@@ -306,6 +320,7 @@ end
 local function newMap()
     FamousPrompts = {}
     ChestPrompts = {}
+    ShovelPrompts = {}
 
 	Map = Assets.Maps.Map:Clone()
 	Map.Parent = workspace
@@ -347,9 +362,9 @@ local function newMap()
 			end
 		end
 	end
-end
 
-initalizeShovels()
+    initalizeShovels()
+end
 
 task.spawn(function()
     while true do

@@ -119,20 +119,26 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 				CollectionService:AddTag(newPart, "Decor")
 			end
 
-			newPart.CFrame = CFrame.new(part.Position)
 			newPart.Parent = model
+			newPart.CFrame = CFrame.new(part.Position)
 
+			local picked = false
 			local rng = Random.new()
 			for key, chance in pairs(MapService.chances) do
 				if not chanceParts[key] then chanceParts[key] = {} end
 
 				if rng:NextInteger(1, chance) <= 1 * (PlayerValues:GetValue(player, "Luck") * 2) then
 					table.insert(chanceParts[key], newPart)
+					if key ~= "Variety" then
+						picked = true
+					end
 					break
 				end
 			end
 
-			CollectionService:AddTag(newPart, "Destructable")
+			if not picked then
+				CollectionService:AddTag(newPart, "Destructable")
+			end
 		end
 	end
 

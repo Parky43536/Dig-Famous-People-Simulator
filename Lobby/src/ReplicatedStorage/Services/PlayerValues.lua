@@ -16,17 +16,10 @@ elseif IsClient then
     PlayerValuesConnection = Remotes:WaitForChild("PlayerValuesConnection")
 end
 
-local NumOfCallbacks = 0
-local ExpectedCallbacks = 1
-
 local StoredValues = {}
 local StoredCallbacks = {}
 
 local function checkCallbacks(player, property, value)
-	if IsClient then
-		repeat task.wait(1) until NumOfCallbacks >= ExpectedCallbacks
-	end
-
 	if StoredCallbacks[property] then
 		for _,callbackObject in pairs(StoredCallbacks[property]) do
 			task.spawn(callbackObject.callback, player, value)
@@ -97,7 +90,6 @@ end
 function PlayerValues:SetCallback(property, callback, optionalId)
 	if not StoredCallbacks[property] then
 		StoredCallbacks[property] = {}
-		NumOfCallbacks += 1
 	end
 
 	local callbackId = optionalId or HttpService:GenerateGUID(false)

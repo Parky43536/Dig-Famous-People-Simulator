@@ -17,7 +17,6 @@ local FamousData = require(DataBase:WaitForChild("FamousData"))
 
 local SerServices = ServerScriptService.Services
 local DataStorage = SerServices.DataStorage
-local ClientService = require(SerServices.ClientService)
 local ProfileService = require(DataStorage.ProfileService)
 local ProfileTemplate = require(DataStorage.ProfileTemplate)
 
@@ -93,22 +92,6 @@ end
 
 ----------------------------------------------------------------------------------
 
-function DataManager:InitalizeLife(player)
-	local playerProfile = self:GetProfile(player)
-
-	if playerProfile then
-		if next(playerProfile.Data.Shovels) == nil then
-			DataManager:NewShovel(player, "Default Shovel")
-		end
-
-		task.spawn(function()
-			PlayerValues:SetValue(player, "Gold", playerProfile.Data.Gold, true)
-		end)
-
-		ClientService.InitializeTools(player, playerProfile)
-	end
-end
-
 function DataManager:NewShovel(player, shovelType, cost)
 	local playerProfile = self:GetProfile(player)
 	local shovelData = ShovelData[shovelType]
@@ -176,7 +159,9 @@ function DataManager:DeleteTool(player, dataType, uniqueId)
 end
 
 function DataManager:GiveGold(player, gold)
-	gold = math.floor(gold * PlayerValues:GetValue(player, "GMulti"))
+	if gold > 0 then
+		gold = math.floor(gold * PlayerValues:GetValue(player, "GMulti"))
+	end
 
 	DataManager:IncrementValue(player, "Gold", gold)
 	PlayerValues:IncrementValue(player, "Gold", gold, true)

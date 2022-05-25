@@ -1,12 +1,20 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerScriptService = game:GetService("ServerScriptService")
 local Players = game:GetService("Players")
 
 local RepServices = ReplicatedStorage.Services
 local ToolService = require(RepServices.ToolService)
+local PlayerValues = require(RepServices.PlayerValues)
+
+local SerServices = ServerScriptService.Services
+local DataManager
 
 local DataBase = ReplicatedStorage.Database
 local ShovelData = require(DataBase:WaitForChild("ShovelData"))
 local FamousData = require(DataBase:WaitForChild("FamousData"))
+
+local Remotes = ReplicatedStorage.Remotes
+local ClientConnection = Remotes.ClientConnection
 
 local ClientService = {}
 
@@ -19,10 +27,15 @@ local function getDataById(database, id)
 end
 
 function ClientService.InitializeClient(player, profile)
+    if next(profile.Data.Shovels) == nil then
+        if not DataManager then DataManager = require(SerServices.DataManager) end
+        DataManager:NewShovel(player, "Default Shovel")
+    end
 
-end
+    PlayerValues:SetValue(player, "Gold", profile.Data.Gold, true)
 
-function ClientService.InitializeTools(player, profile)
+    ClientConnection:FireClient(player, "loadPlayerValues")
+
     for id, uniqueIds in pairs(profile.Data.Shovels) do
         local shovelType, shovelData = getDataById(ShovelData, id)
         if shovelData then

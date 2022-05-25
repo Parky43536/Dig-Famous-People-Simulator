@@ -5,6 +5,10 @@ local Assets = ReplicatedStorage.Assets
 
 local CharacterService = {}
 
+local blockedAccessories = {
+	["Jacket-TrenchCoat-White-8648380153"] = true
+}
+
 function CharacterService:CreateCharacterIcon(Tool, userId)
 	if not Assets.Storage.Icons:FindFirstChild(userId) then
 		task.spawn(function()
@@ -35,13 +39,9 @@ function CharacterService:CreateCharacterRig(Part, userId)
 
 		for _,obj in next, characterData:GetChildren() do
 			if obj:IsA("Accessory") then
-				characterHumanoid:AddAccessory(obj)
-			end
-		end
-
-		for _,obj in next, characterData:GetChildren() do
-			if obj:IsA("ValueBase") then
-				obj.Parent = characterHumanoid
+				if not blockedAccessories[obj.Name] then
+					characterHumanoid:AddAccessory(obj)
+				end
 			end
 		end
 

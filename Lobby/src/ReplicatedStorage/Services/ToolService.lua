@@ -11,7 +11,7 @@ local SerServices = ServerScriptService.Services
 local DataManager
 
 local RepServices = ReplicatedStorage.Services
-local PlayerValues = require(RepServices:WaitForChild("PlayerValues"))
+local PlayerValues = require(RepServices.PlayerValues)
 local MapService
 
 local Utility = ReplicatedStorage:WaitForChild("Utility")
@@ -25,6 +25,7 @@ local ToolService = {}
 
 local Loaded = {}
 local EquippedTracker = {}
+local DigCooldown = {}
 
 function ToolService:LoadShovel(player, shovelType, uniqueId)
     local shovelStats = ShovelData[shovelType]
@@ -88,26 +89,38 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
         Sounds.Dig:Play()
 
         if Humanoid then
-            local Anim = (Tool:FindFirstChild("Slash") or Create("Animation"){
-                Name = "Slash",
-                AnimationId = "rbxassetid://" .. Animations.Slash,
-                Parent = Tool
-            })
-            if Anim then
-                local Track = Humanoid:LoadAnimation(Anim)
-                Track:Play(0)
+            if Humanoid.RigType == Enum.HumanoidRigType.R6 then
+                local Anim = Instance.new("StringValue")
+                Anim.Name = "toolanim"
+                Anim.Value = "Lunge"
+                Anim.Parent = Tool
+            elseif Humanoid.RigType == Enum.HumanoidRigType.R15 then
+                local Anim = (Tool:FindFirstChild("Slash") or Create("Animation"){
+                    Name = "Slash",
+                    AnimationId = "rbxassetid://" .. Animations.Slash,
+                    Parent = Tool
+                })
+                if Anim then
+                    local Track = Humanoid:LoadAnimation(Anim)
+                    Track:Play(0)
+                end
             end
         end
     end
 
     local function Activated()
-        if not Tool.Enabled or not ToolEquipped or not CheckIfAlive(player) then
+        if not Tool.Enabled or not ToolEquipped or DigCooldown[player] or not CheckIfAlive(player) then
             return
         end
 
+        DigCooldown[player] = true
         Tool.Enabled = false
+
         Dig()
+
         task.wait(shovelStats.Stats.Reload)
+
+        DigCooldown[player] = nil
         Tool.Enabled = true
     end
 

@@ -5,6 +5,7 @@ local ServerValues = require(ServerScriptService.ServerValues)
 
 local SerServices = ServerScriptService.Services
 local DataManager = require(SerServices.DataManager)
+local ClientService = require(SerServices.ClientService)
 
 local PlayerProfiles = {}
 
@@ -24,8 +25,10 @@ local function playerAdded(newPlayer)
         warn("Could not load player profile")
     end
 
+    ClientService.InitializeClient(newPlayer, profile)
+
     newPlayer.CharacterAdded:Connect(function(newCharacter)
-        DataManager:InitalizeLife(newPlayer)
+        ClientService.InitializeClient(newPlayer, profile)
 
         local light = Instance.new("PointLight")
         light.Parent = newCharacter.PrimaryPart
