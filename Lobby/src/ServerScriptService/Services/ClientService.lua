@@ -27,14 +27,16 @@ local function getDataById(database, id)
 end
 
 function ClientService.InitializeClient(player, profile)
+    PlayerValues:SetValue(player, "Gold", profile.Data.Gold, true)
+
+    ClientConnection:FireClient(player, "loadPlayerValues")
+
+    -------------------------
+
     if next(profile.Data.Shovels) == nil then
         if not DataManager then DataManager = require(SerServices.DataManager) end
         DataManager:NewShovel(player, "Default Shovel")
     end
-
-    PlayerValues:SetValue(player, "Gold", profile.Data.Gold, true)
-
-    ClientConnection:FireClient(player, "loadPlayerValues")
 
     for id, uniqueIds in pairs(profile.Data.Shovels) do
         local shovelType, shovelData = getDataById(ShovelData, id)

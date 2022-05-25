@@ -139,7 +139,7 @@ function MapService:ChanceParts(chanceParts)
             if coveredPart(part) then
                 local chest = Assets.Chests:FindFirstChild(rarity):Clone()
                 chest:PivotTo(part.CFrame * CFrame.Angles(0, math.rad(math.random(0, 360)), 0))
-                
+
                 if not workspace.Map:FindFirstChild("ChanceParts") then
                     local model = Instance.new("Model")
                     model.Name = "ChanceParts"

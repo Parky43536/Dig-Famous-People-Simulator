@@ -21,11 +21,46 @@ local DataBase = ReplicatedStorage.Database
 local ShovelData = require(DataBase:WaitForChild("ShovelData"))
 local FamousData = require(DataBase:WaitForChild("FamousData"))
 
+local Remotes = ReplicatedStorage.Remotes
+local ClientConnection = Remotes.ClientConnection
+
 local ToolService = {}
 
 local Loaded = {}
 local EquippedTracker = {}
 local DigCooldown = {}
+
+function ToolService:PlayerStats(player, Humanoid, shovelStats)
+    if not shovelStats then shovelStats = {} end
+    local defaultStats = ShovelData["Default Shovel"].Stats
+
+    local newStats = {
+        Reload = (shovelStats.Reload or defaultStats.Reload),
+        Dig = (shovelStats.Dig or defaultStats.Dig),
+        Speed = (shovelStats.Speed or defaultStats.Speed),
+        Jump = (shovelStats.Jump or defaultStats.Jump),
+        GMulti = (shovelStats.GMulti or defaultStats.GMulti),
+        Luck = (shovelStats.Luck or defaultStats.Luck),
+    }
+
+    Humanoid.WalkSpeed = newStats.Speed
+    Humanoid.JumpHeight = newStats.Jump
+
+    PlayerValues:SetValue(player, "GMulti", newStats.GMulti)
+    PlayerValues:SetValue(player, "Luck", newStats.Luck)
+
+    if next(shovelStats) == nil then
+        for stat, value in pairs(newStats) do
+            if value == ShovelData["Default Shovel"].Stats[stat] then
+                newStats[stat] = "Hide"
+            end
+        end
+    end
+
+    ClientConnection:FireClient(player, "showPlayerStats", {
+        newStats = newStats
+    })
+end
 
 function ToolService:LoadShovel(player, shovelType, uniqueId)
     local shovelStats = ShovelData[shovelType]
@@ -129,20 +164,15 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
             return
         end
 
-        Humanoid.WalkSpeed = shovelStats.Stats.Speed
-        Humanoid.JumpHeight = shovelStats.Stats.Jump
-        PlayerValues:SetValue(player, "GMulti", shovelStats.Stats.GMulti)
-        PlayerValues:SetValue(player, "Luck", shovelStats.Stats.Luck)
+        ToolService:PlayerStats(player, Humanoid, shovelStats.Stats)
 
         EquippedTracker[player] = {dataType = "Shovels", data = shovel, tool = Tool}
         ToolEquipped = true
     end
 
     local function Unequipped()
-        Humanoid.WalkSpeed = ShovelData["Default Shovel"].Stats.Speed
-        Humanoid.JumpHeight = ShovelData["Default Shovel"].Stats.Jump
-        PlayerValues:SetValue(player, "GMulti", ShovelData["Default Shovel"].Stats.GMulti)
-        PlayerValues:SetValue(player, "Luck", ShovelData["Default Shovel"].Stats.Luck)
+        ToolService:PlayerStats(player, Humanoid)
+
         ToolEquipped = false
         EquippedTracker[player] = nil
     end
@@ -217,18 +247,17 @@ function ToolService:DeleteEquippedTool(player)
             equipData.tool:Destroy()
             EquippedTracker[player] = nil
 
-            local Character = player.Character
-            local Humanoid = Character.Humanoid
-            Humanoid.WalkSpeed = ShovelData["Default Shovel"].Stats.Speed
-            Humanoid.JumpHeight = ShovelData["Default Shovel"].Stats.Jump
-            PlayerValues:SetValue(player, "GMulti", ShovelData["Default Shovel"].Stats.GMulti)
-            PlayerValues:SetValue(player, "Luck", ShovelData["Default Shovel"].Stats.Luck)
+            local character = player.Character
+            if character then
+                ToolService:PlayerStats(player, character.Humanoid)
+            end
         end
     end
 end
 
 Players.PlayerAdded:Connect(function(playerAdded)
     playerAdded.CharacterAdded:Connect(function(newCharacter)
+        ToolService:PlayerStats(playerAdded, newCharacter.Humanoid)
         Loaded[playerAdded] = true
     end)
 end)

@@ -23,7 +23,24 @@ end)
 
 local function loadGold(value)
     if SideFrame then
-        SideFrame.Gold.Text = "Gold: " .. value
+        SideFrame.Gold.GoldAmount.Text = value
+    end
+end
+
+local function showStats(newStats)
+    if SideFrame then
+        for stat, value in pairs(newStats) do
+            local statHolder = SideFrame.CollectionAndStats.Stats:FindFirstChild(stat)
+            if value ~= "Hide" then
+                if stat == "GMulti" then
+                    statHolder.Text = "G Multi: " .. value
+                else
+                    statHolder.Text = stat .. ": " .. value
+                end
+            else
+                statHolder.Text = ""
+            end
+        end
     end
 end
 
@@ -33,8 +50,10 @@ PlayerValues:SetCallback("Gold", function(player, value)
     end
 end)
 
-ClientConnection.OnClientEvent:Connect(function(action)
+ClientConnection.OnClientEvent:Connect(function(action, args)
     if action == "loadPlayerValues" then
         loadGold(PlayerValues:GetValue(LocalPlayer, "Gold"))
+    elseif action == "showPlayerStats" then
+        showStats(args.newStats)
     end
 end)

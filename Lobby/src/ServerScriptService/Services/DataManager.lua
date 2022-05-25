@@ -160,7 +160,7 @@ end
 
 function DataManager:GiveGold(player, gold)
 	if gold > 0 then
-		gold = math.floor(gold * PlayerValues:GetValue(player, "GMulti"))
+		gold = math.floor(gold * (PlayerValues:GetValue(player, "GMulti") or 1))
 	end
 
 	DataManager:IncrementValue(player, "Gold", gold)

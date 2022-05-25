@@ -7,7 +7,7 @@ local Values = ReplicatedStorage:WaitForChild("Values")
 
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 local PlayerUi = PlayerGui:WaitForChild("PlayerUi")
-local SideFrame = PlayerUi:WaitForChild("SideFrame")
+local TopFrame = PlayerUi:WaitForChild("TopFrame")
 
 -------------------------
 
@@ -16,7 +16,7 @@ local function toHMS(s)
 end
 
 Values.MapTimer.Changed:Connect(function(value)
-	SideFrame.MapTimer.Text = "Map Timer: " .. toHMS(value)
+	TopFrame.MapTimer.Text = toHMS(value)
 end)
 
 
