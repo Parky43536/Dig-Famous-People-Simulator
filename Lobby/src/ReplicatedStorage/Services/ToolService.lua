@@ -34,7 +34,7 @@ local DigCooldown = {}
 function ToolService:PlayerStats(player, Humanoid, shovelStats)
     if not shovelStats then shovelStats = {} end
     local defaultStats = ShovelData["Default Shovel"].Stats
-    local prestige = PlayerValues:GetValue(player, "Prestige")
+    local prestige = PlayerValues:GetValue(player, "Prestige") or 0
 
     local newStats = {
         Reload = (shovelStats.Reload or defaultStats.Reload),
