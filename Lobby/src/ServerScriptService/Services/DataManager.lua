@@ -15,6 +15,9 @@ local DataBase = ReplicatedStorage.Database
 local ShovelData = require(DataBase:WaitForChild("ShovelData"))
 local FamousData = require(DataBase:WaitForChild("FamousData"))
 
+local Remotes = ReplicatedStorage.Remotes
+local PrestigeRemote = Remotes.PrestigeRemote
+
 local SerServices = ServerScriptService.Services
 local DataStorage = SerServices.DataStorage
 local ProfileService = require(DataStorage.ProfileService)
@@ -91,6 +94,14 @@ function DataManager:GetProfile(player)
 end
 
 ----------------------------------------------------------------------------------
+
+local function length(Table)
+	local counter = 0 
+	for _, v in pairs(Table) do
+		counter += 1
+	end
+	return counter
+end
 
 function DataManager:NewShovel(player, shovelType, cost)
 	local playerProfile = self:GetProfile(player)
@@ -172,5 +183,28 @@ function DataManager:GiveGold(player, gold)
 	DataManager:IncrementValue(player, "Gold", gold)
 	PlayerValues:IncrementValue(player, "Gold", gold, "playerOnly")
 end
+
+function DataManager:Prestige(player)
+	local playerProfile = self:GetProfile(player)
+
+	if playerProfile then
+		if length(playerProfile.Data.Famous) == length(FamousData) then
+			playerProfile.Data.Famous = {}
+			playerProfile.Data.Shovels = {}
+			playerProfile.Data.Gold = 0
+			playerProfile.Data.Prestige += 1
+
+			PlayerValues:SetValue(player, "Famous", playerProfile.Data.Famous, "playerOnly")
+			PlayerValues:SetValue(player, "Gold", 0, "playerOnly")
+			PlayerValues:SetValue(player, "Prestige", playerProfile.Data.Prestige, "playerOnly")
+
+			player:LoadCharacter()
+		end
+	end
+end
+
+PrestigeRemote.OnServerEvent:Connect(function(player)
+	DataManager:Prestige(player)
+end)
 
 return DataManager
