@@ -126,7 +126,11 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 			for key, chance in pairs(MapService.chances) do
 				if not chanceParts[key] then chanceParts[key] = {} end
 
-				local luckMulti = ((PlayerValues:GetValue(player, "Luck") or 1) - 1) * 5
+				local luckMulti = 1
+				if key ~= "Variety" and key ~= "Crystal" then
+					luckMulti = ((PlayerValues:GetValue(player, "Luck") or 1) - 1) * 5
+				end
+
 				if rng:NextInteger(1, chance) <= 1 + luckMulti then
 					table.insert(chanceParts[key], newPart)
 					break

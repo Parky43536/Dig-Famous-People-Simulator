@@ -64,8 +64,8 @@ local ShovelData = {
 			Dig = 14,
 			Speed = 16,
 			Jump = 7.2,
-			GMulti = 1.5,
-			Luck = 1,
+			GMulti = 1.4,
+			Luck = 1.1,
 		}
 	},
 
@@ -78,8 +78,8 @@ local ShovelData = {
 			Dig = 9,
 			Speed = 25,
 			Jump = 15,
-			GMulti = 1,
-			Luck = 1.5,
+			GMulti = 1.1,
+			Luck = 1.4,
 		}
 	},
 
