@@ -23,11 +23,10 @@ local ShovelData = require(DataBase:WaitForChild("ShovelData"))
 local FamousData = require(DataBase:WaitForChild("FamousData"))
 
 local Remotes = ReplicatedStorage.Remotes
-local ClientConnection = Remotes.ClientConnection
+local ClientConnection = Remotes:WaitForChild("ClientConnection")
 
 local ToolService = {}
 
-local Loaded = {}
 local EquippedTracker = {}
 local DigCooldown = {}
 
@@ -75,8 +74,8 @@ function ToolService:LoadShovel(player, shovelType, uniqueId)
         local Tool = Assets.Shovels:FindFirstChild(shovel.shovelType):Clone()
         Tool.ToolTip = shovel.shovelType
 
-        if not Loaded[player] then
-            repeat task.wait(1) until Loaded[player]
+        if not player.Character then
+            repeat task.wait(1) until player.Character
         end
         Tool.Parent = player.Backpack
 
@@ -204,8 +203,8 @@ function ToolService:LoadFamous(player, famousType, uniqueId)
         Tool.ToolTip = famousStats.Name .. ", " .. famousStats.Rarity .. ", " .. MapService:RoundDeci(1 / General.ItemChances[famousStats.Rarity] * 5000, 2) .. "%"
         Tool.Name = famousStats.Name
 
-        if not Loaded[player] then
-            repeat task.wait(1) until Loaded[player]
+        if not player.Character then
+            repeat task.wait(1) until player.Character
         end
         Tool.Parent = player.Backpack
 
@@ -248,14 +247,16 @@ function ToolService:SellEquippedTool(player)
     local equipData = EquippedTracker[player]
     if equipData then
         local gold = 0
+        local minMax
         if equipData.dataType == "Famous" then
             gold = General.RarityData[equipData.famousStats.Rarity].goldValue
         elseif equipData.dataType == "Shovels" then
             gold = equipData.shovelStats.Cost * General.ShovelValue
+            minMax = {min = 0, max = equipData.shovelStats.Cost}
         end
 
         if not DataManager then DataManager = require(SerServices.DataManager) end
-        local removed = DataManager:SellTool(player, equipData.dataType, equipData.data.uniqueId, gold)
+        local removed = DataManager:SellTool(player, equipData.dataType, equipData.data.uniqueId, gold, minMax)
         if removed then
             equipData.tool:Destroy()
             EquippedTracker[player] = nil
@@ -267,12 +268,5 @@ function ToolService:SellEquippedTool(player)
         end
     end
 end
-
-Players.PlayerAdded:Connect(function(playerAdded)
-    playerAdded.CharacterAdded:Connect(function(newCharacter)
-        ToolService:PlayerStats(playerAdded, newCharacter.Humanoid)
-        Loaded[playerAdded] = true
-    end)
-end)
 
 return ToolService

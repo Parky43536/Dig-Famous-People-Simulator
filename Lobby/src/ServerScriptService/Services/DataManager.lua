@@ -119,7 +119,7 @@ function DataManager:NewShovel(player, shovelType, cost)
 
 		if cost then
 			if playerProfile.Data.Gold >= cost then
-				DataManager:GiveGold(player, -cost, true)
+				DataManager:GiveGold(player, -cost, {min = -shovelData.Cost, max = 0})
 				ToolService:LoadShovel(player, shovelType, uniqueId)
 			else
 				return false
@@ -139,7 +139,7 @@ function DataManager:NewFamous(player, famousType)
 	if playerProfile and famousData then
 		if playerProfile.Data.Famous[tostring(famousData.id)] then
 			local gold = General.RarityData[famousData.Rarity].goldValue
-			DataManager:GiveGold(player, gold, true)
+			DataManager:GiveGold(player, gold)
 		else
 			local uniqueId = HttpService:GenerateGUID(false)
 			playerProfile.Data.Famous[tostring(famousData.id)] = uniqueId
@@ -151,7 +151,7 @@ function DataManager:NewFamous(player, famousType)
 	end
 end
 
-function DataManager:SellTool(player, dataType, uniqueId, gold)
+function DataManager:SellTool(player, dataType, uniqueId, gold, minMax)
 	local playerProfile = self:GetProfile(player)
 
 	if playerProfile then
@@ -159,7 +159,7 @@ function DataManager:SellTool(player, dataType, uniqueId, gold)
 			if tostring(dataUniqueId) == tostring(uniqueId) then
 				playerProfile.Data[dataType][id] = nil
 
-				DataManager:GiveGold(player, gold, true)
+				DataManager:GiveGold(player, gold, minMax)
 
 				if dataType == "Famous" then
 					PlayerValues:SetValue(player, "Famous", playerProfile.Data.Famous, "playerOnly")
@@ -171,9 +171,12 @@ function DataManager:SellTool(player, dataType, uniqueId, gold)
 	end
 end
 
-function DataManager:GiveGold(player, gold, ignoreMulti)
-	if not ignoreMulti then
-		gold = math.floor(gold * (PlayerValues:GetValue(player, "GMulti") or 1))
+function DataManager:GiveGold(player, gold, minMax)
+	gold = math.floor(gold * (PlayerValues:GetValue(player, "GMulti") or 1))
+
+	if minMax then
+		print(minMax)
+		gold = math.clamp(gold, minMax.min, minMax.max)
 	end
 
 	DataManager:IncrementValue(player, "Gold", gold)

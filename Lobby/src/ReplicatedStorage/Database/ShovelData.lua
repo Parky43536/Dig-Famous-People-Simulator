@@ -15,7 +15,7 @@ local ShovelData = {
 
 	["Super Shovel"] = {
 		id = 2,
-		Cost = 3500,
+		Cost = 2500,
 		Color = Color3.fromRGB(226, 64, 64),
 		Stats = {
 			Reload = 1.4,

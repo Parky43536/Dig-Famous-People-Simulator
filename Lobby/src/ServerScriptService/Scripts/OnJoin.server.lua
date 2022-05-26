@@ -1,11 +1,15 @@
 local Players = game:GetService("Players")
 local ServerScriptService = game:GetService("ServerScriptService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local ServerValues = require(ServerScriptService.ServerValues)
 
 local SerServices = ServerScriptService.Services
 local DataManager = require(SerServices.DataManager)
 local ClientService = require(SerServices.ClientService)
+
+local RepServices = ReplicatedStorage.Services
+local ToolService = require(RepServices.ToolService)
 
 local PlayerProfiles = {}
 
@@ -25,13 +29,25 @@ local function playerAdded(newPlayer)
         warn("Could not load player profile")
     end
 
-    ClientService.InitializeClient(newPlayer, profile)
+    local function loadPlayer()
+        task.spawn(function()
+            if not newPlayer.Character then
+                repeat task.wait(1) until newPlayer.Character
+            end
 
-    newPlayer.CharacterAdded:Connect(function(newCharacter)
+            ToolService:PlayerStats(newPlayer, newPlayer.Character.Humanoid)
+
+            local light = Instance.new("PointLight")
+            light.Parent = newPlayer.Character.PrimaryPart
+        end)
+
         ClientService.InitializeClient(newPlayer, profile)
+    end
 
-        local light = Instance.new("PointLight")
-        light.Parent = newCharacter.PrimaryPart
+    loadPlayer()
+
+    newPlayer.CharacterAdded:Connect(function()
+        loadPlayer()
     end)
 end
 

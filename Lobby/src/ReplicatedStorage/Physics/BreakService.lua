@@ -90,6 +90,7 @@ end
 
 local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 	local chanceParts = {}
+	local chancePartsTotal = 0
 
 	for _,part in pairs(parts) do
 		if not part.combined then
@@ -125,18 +126,23 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 			newPart.Parent = model
 			newPart.CFrame = CFrame.new(part.Position)
 
-			local rng = Random.new()
-			for key, chance in pairs(General.ItemChances) do
-				if not chanceParts[key] then chanceParts[key] = {} end
+			if chancePartsTotal < originalPart.Size.Magnitude / General.ChancePartDivider then
+				local rng = Random.new()
+				for key, chance in pairs(General.ItemChances) do
+					if not chanceParts[key] then chanceParts[key] = {} end
 
-				local luckMulti = 1
-				if key ~= "Variety" and key ~= "Crystal" then
-					luckMulti = ((PlayerValues:GetValue(player, "Luck") or 1) - 1) * 5
-				end
+					local luckMulti = 1
+					if not General.ChanceLuckIgnore[key] then
+						luckMulti = ((PlayerValues:GetValue(player, "Luck") or 1) - 1) * 3
+					end
 
-				if rng:NextInteger(1, chance) <= 1 + luckMulti then
-					table.insert(chanceParts[key], newPart)
-					break
+					if rng:NextInteger(1, chance) <= 1 + luckMulti then
+						table.insert(chanceParts[key], newPart)
+						if not General.ChanceTotalIgnore[key] then
+							chancePartsTotal += 1
+						end
+						break
+					end
 				end
 			end
 

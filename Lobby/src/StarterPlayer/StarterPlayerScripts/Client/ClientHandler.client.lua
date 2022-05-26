@@ -10,6 +10,9 @@ local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 local PlayerUi = PlayerGui:WaitForChild("PlayerUi")
 local SideFrame = PlayerUi:WaitForChild("SideFrame")
 
+local Utility = ReplicatedStorage:WaitForChild("Utility")
+local TweenService = require(Utility:WaitForChild("TweenService"))
+
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local ClientConnection = Remotes:WaitForChild("ClientConnection")
 
@@ -21,8 +24,41 @@ SideFrame.Spawn.Activated:Connect(function()
     end
 end)
 
+local currentGold
+local currentTween
+local lastGoldUpate
 local function loadGold(value)
     if SideFrame then
+        if currentGold then
+            local goldGain = value - currentGold
+            if goldGain ~= 0 then
+                if goldGain > 0 then
+                    SideFrame.Gold.GoldIncrease.Text = "+" .. goldGain
+                else
+                    SideFrame.Gold.GoldIncrease.Text = goldGain
+                end
+
+                if currentTween then currentTween:Cancel() end
+                SideFrame.Gold.GoldIncrease.Size = UDim2.new(0.6, 0, 0.6, 0)
+                SideFrame.Gold.GoldIncrease.TextColor3 = Color3.fromRGB(255, 255, 0)
+                local goal = {Size = SideFrame.Gold.GoldIncrease.Size + UDim2.new(0.2, 0, 0.2, 0), TextColor3 = Color3.fromRGB(255, 175, 110)}
+                local properties = {Time = 1, Dir = "In", Style = "Bounce", Reverse = true}
+                currentTween = TweenService.tween(SideFrame.Gold.GoldIncrease, goal, properties)
+                SideFrame.Gold.GoldIncrease.Visible = true
+
+                local ticker = tick()
+                lastGoldUpate = ticker
+                task.delay(2, function()
+                    if lastGoldUpate == ticker then
+                        SideFrame.Gold.GoldIncrease.Visible = false
+                        currentGold = value
+                    end
+                end)
+            end
+        else
+            currentGold = value
+        end
+
         SideFrame.Gold.GoldAmount.Text = value
     end
 end

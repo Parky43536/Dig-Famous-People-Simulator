@@ -1,6 +1,7 @@
 local General = {}
 
 General.ShovelValue = 0.2
+General.ChancePartDivider = 3
 
 General.ItemChances = {
     Mythic = 7000,
@@ -15,6 +16,16 @@ General.ItemChances = {
 
     Crystal = 50,
     Variety = 3,
+}
+
+General.ChanceLuckIgnore = {
+	Crystal = true,
+	Variety = true,
+}
+
+General.ChanceTotalIgnore = {
+	Crystal = true,
+	Variety = true,
 }
 
 General.PrestigeBonus = {
