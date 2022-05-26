@@ -189,10 +189,10 @@ local FamousData = {
         Name = "JuliaMinegirl",
         Rarity = "Common",
     },
-    ["141039383"]= {
+    ["51645737"]= {
         id = 39,
-        Name = "Funnehcake",
-        Rarity = "Common",
+        Name = "Erythia",
+        Rarity = "Rare",
     },
     ["3359213"]= {
         id = 40,
@@ -227,7 +227,7 @@ local FamousData = {
     ["2025110"]= {
         id = "46",
         Name = "badcc",
-        Rarity = "Rare",
+        Rarity = "Common",
     },
     ["16"]= {
         id = "47",
@@ -294,9 +294,9 @@ local FamousData = {
         Name = "maplestick",
         Rarity = "Epic",
     },
-    ["4307571"]= {
+    ["2032622"]= {
         id = "60",
-        Name = "VyrissDev",
+        Name = "CloneTrooper1019",
         Rarity = "Mythic",
     },
 }
