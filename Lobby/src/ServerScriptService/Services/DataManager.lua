@@ -110,7 +110,7 @@ function DataManager:NewShovel(player, shovelType, cost)
 	if playerProfile and shovelData then
 		if cost then
 			if playerProfile.Data.Gold >= cost then
-				DataManager:GiveGold(player, -cost)
+				DataManager:GiveGold(player, -cost, true)
 			else
 				return false
 			end
@@ -151,7 +151,7 @@ function DataManager:NewFamous(player, famousType)
 	end
 end
 
-function DataManager:DeleteTool(player, dataType, uniqueId)
+function DataManager:SellTool(player, dataType, uniqueId, gold)
 	local playerProfile = self:GetProfile(player)
 
 	if playerProfile then
@@ -164,6 +164,8 @@ function DataManager:DeleteTool(player, dataType, uniqueId)
 						playerProfile.Data[dataType][id] = nil
 					end
 
+					DataManager:GiveGold(player, gold, true)
+
 					if dataType == "Famous" then
 						PlayerValues:SetValue(player, "Famous", playerProfile.Data.Famous, "playerOnly")
 					end
@@ -175,8 +177,8 @@ function DataManager:DeleteTool(player, dataType, uniqueId)
 	end
 end
 
-function DataManager:GiveGold(player, gold)
-	if gold > 0 then
+function DataManager:GiveGold(player, gold, ignoreMulti)
+	if not ignoreMulti then
 		gold = math.floor(gold * (PlayerValues:GetValue(player, "GMulti") or 1))
 	end
 

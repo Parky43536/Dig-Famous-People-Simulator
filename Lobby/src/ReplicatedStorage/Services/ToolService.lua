@@ -168,7 +168,7 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
 
         ToolService:PlayerStats(player, Humanoid, shovelStats.Stats)
 
-        EquippedTracker[player] = {dataType = "Shovels", data = shovel, tool = Tool}
+        EquippedTracker[player] = {dataType = "Shovels", data = shovel, tool = Tool, shovelStats = shovelStats}
         ToolEquipped = true
     end
 
@@ -202,6 +202,7 @@ function ToolService:LoadFamous(player, famousType, uniqueId)
 
         if not MapService then MapService = require(RepServices.MapService) end
         Tool.ToolTip = famousStats.Name .. ", " .. famousStats.Rarity .. ", " .. MapService:RoundDeci(1 / General.ItemChances[famousStats.Rarity] * 5000, 2) .. "%"
+        Tool.Name = famousStats.Name
 
         if not Loaded[player] then
             repeat task.wait(1) until Loaded[player]
@@ -232,7 +233,7 @@ function ToolService:FamousManager(player, Tool, famous, famousStats)
             rig.Humanoid.PlatformStand = true
         end
 
-        EquippedTracker[player] = {dataType = "Famous", data = famous, tool = Tool}
+        EquippedTracker[player] = {dataType = "Famous", data = famous, tool = Tool, famousStats = famousStats}
     end
 
     local function Unequipped()
@@ -243,11 +244,18 @@ function ToolService:FamousManager(player, Tool, famous, famousStats)
     Tool.Unequipped:Connect(Unequipped)
 end
 
-function ToolService:DeleteEquippedTool(player)
+function ToolService:SellEquippedTool(player)
     local equipData = EquippedTracker[player]
     if equipData then
+        local gold = 0
+        if equipData.dataType == "Famous" then
+            gold = General.RarityData[equipData.famousStats.Rarity].goldValue
+        elseif equipData.dataType == "Shovels" then
+            gold = equipData.shovelStats.Cost * General.ShovelValue
+        end
+
         if not DataManager then DataManager = require(SerServices.DataManager) end
-        local removed = DataManager:DeleteTool(player, equipData.dataType, equipData.data.uniqueId)
+        local removed = DataManager:SellTool(player, equipData.dataType, equipData.data.uniqueId, gold)
         if removed then
             equipData.tool:Destroy()
             EquippedTracker[player] = nil

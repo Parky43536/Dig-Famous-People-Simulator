@@ -135,14 +135,7 @@ function MapService:ChanceParts(chanceParts)
 
                 part:Destroy()
 
-                local gold = 0
-                if rarity == "GoldChestLegendary" then
-                    gold = rng:NextInteger(2500, 5000)
-                elseif rarity == "GoldChestRare" then
-                    gold = rng:NextInteger(500, 1000)
-                elseif rarity == "GoldChestCommon" then
-                    gold = rng:NextInteger(100, 200)
-                end
+                local gold = rng:NextInteger(General.ChestGold[rarity].min, General.ChestGold[rarity].max)
 
                 chest.Root.ChestPrompt.ObjectText = string.gsub(rarity, "GoldChest", "") .. ", " .. MapService:RoundDeci(1 / General.ItemChances[rarity] * 5000, 2) .. "%"
                 chest.Root.ChestPrompt.ActionText = "Collect " .. gold .. " Gold"
@@ -346,6 +339,10 @@ local function newMap()
 					CollectionService:AddTag(object, "Breakable")
 				end
 			end
+        elseif object.Name == "DialogInserter" then
+            local dialog = Assets.Dialogs:FindFirstChild(object.Value):Clone()
+            dialog.Parent = object.Parent
+            object:Destroy()
 		end
 	end
 

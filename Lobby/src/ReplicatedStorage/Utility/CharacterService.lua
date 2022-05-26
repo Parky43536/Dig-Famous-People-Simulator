@@ -6,7 +6,8 @@ local Assets = ReplicatedStorage.Assets
 local CharacterService = {}
 
 local blockedAccessories = {
-	["Jacket-TrenchCoat-White-8648380153"] = true
+	["Jacket-TrenchCoat-White-8648380153"] = true,
+	["DuckyFloatie"] = true,
 }
 
 function CharacterService:CreateCharacterIcon(userId)

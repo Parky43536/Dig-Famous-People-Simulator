@@ -6,8 +6,8 @@ local ToolService = require(RepServices.ToolService)
 local MapService = require(RepServices.MapService)
 
 local function onPromptTriggered(promptObject, player)
-	if promptObject.Name == "TrashPrompt" then
-		ToolService:DeleteEquippedTool(player)
+	if promptObject.Name == "SellPrompt" then
+		ToolService:SellEquippedTool(player)
 	elseif promptObject.Name == "FamousPrompt" then
 		MapService:ProcessFamous(player, promptObject)
 	elseif promptObject.Name == "ChestPrompt" then

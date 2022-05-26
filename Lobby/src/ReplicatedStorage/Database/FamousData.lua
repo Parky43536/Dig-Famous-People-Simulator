@@ -172,7 +172,7 @@ local FamousData = {
     ["84743203"]= {
         id = 35,
         Name = "TanqR",
-        Rarity = "Epic",
+        Rarity = "Common",
     },
     ["164626079"]= {
         id = 36,
@@ -187,7 +187,7 @@ local FamousData = {
     ["99060139"]= {
         id = 38,
         Name = "JuliaMinegirl",
-        Rarity = "Rare",
+        Rarity = "Common",
     },
     ["141039383"]= {
         id = 39,
@@ -198,6 +198,106 @@ local FamousData = {
         id = 40,
         Name = "forstaken",
         Rarity = "Common",
+    },
+    ["4317782"]= {
+        id = 41,
+        Name = "Wolfragon",
+        Rarity = "Common",
+    },
+    ["56645740"] = {
+        id = 42,
+        Name = "ivofrog",
+        Rarity = "Common",
+    },
+    ["21271276"] = {
+        id = 43,
+        Name = "LordSilverius",
+        Rarity = "Common",
+    },
+    ["858478034"] = {
+        id = 44,
+        Name = "RoughSphereBlox",
+        Rarity = "Epic",
+    },
+    ["261"]= {
+        id = "45",
+        Name = "Shedletsky",
+        Rarity = "Legendary",
+    },
+    ["2025110"]= {
+        id = "46",
+        Name = "badcc",
+        Rarity = "Rare",
+    },
+    ["16"]= {
+        id = "47",
+        Name = "erik.cassel",
+        Rarity = "Common",
+    },
+    ["5116262"]= {
+        id = "48",
+        Name = "Lunya",
+        Rarity = "Epic",
+    },
+    ["916"]= {
+        id = "49",
+        Name = "Matt Dusek",
+        Rarity = "Mythic",
+    },
+    ["82471"]= {
+        id = "50",
+        Name = "Dued1",
+        Rarity = "Common",
+    },
+    ["22"]= {
+        id = "51",
+        Name = "Keith",
+        Rarity = "Common",
+    },
+    ["4397833"]= {
+        id = "52",
+        Name = "Quenty",
+        Rarity = "Common",
+    },
+    ["8289996"]= {
+        id = "53",
+        Name = "IcyTea",
+        Rarity = "Rare",
+    },
+    ["113657341"]= {
+        id = "54",
+        Name = "prisman",
+        Rarity = "Legendary",
+    },
+    ["14359864"]= {
+        id = "55",
+        Name = "zKevin",
+        Rarity = "Rare",
+    },
+    ["130749"]= {
+        id = "56",
+        Name = "Playrobot",
+        Rarity = "Common",
+    },
+    ["38506985"]= {
+        id = "57",
+        Name = "NowDoTheHarlemShake",
+        Rarity = "Rare",
+    },
+    ["28969907"]= {
+        id = "58",
+        Name = "OnlyTwentyCharacters",
+        Rarity = "Common",
+    },
+    ["30483959"]= {
+        id = "59",
+        Name = "maplestick",
+        Rarity = "Epic",
+    },
+    ["4307571"]= {
+        id = "60",
+        Name = "VyrissDev",
+        Rarity = "Mythic",
     },
 }
 

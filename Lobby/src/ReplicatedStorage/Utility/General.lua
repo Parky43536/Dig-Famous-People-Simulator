@@ -1,7 +1,9 @@
 local General = {}
 
+General.ShovelValue = 0.2
+
 General.ItemChances = {
-    Mythic = 10000,
+    Mythic = 7000,
     Legendary = 3000,
     Epic = 1000,
     Rare = 500,
@@ -22,30 +24,41 @@ General.PrestigeBonus = {
 	Luck = 0.5,
 }
 
+General.ChestGold = {
+	GoldChestLegendary = {min = 2500, max = 5000},
+	GoldChestRare = {min = 500, max = 1000},
+	GoldChestCommon = {min = 100, max = 200},
+}
+
 General.RarityData = {
-	["Common"] = {
+	Common = {
 		order = 1,
 		color = Color3.fromRGB(255, 255, 255),
+		goldValue = 50,
 	},
 
-	["Rare"] = {
+	Rare = {
 		order = 2,
 		color = Color3.fromRGB(47, 130, 255),
+		goldValue = 250,
 	},
 
-	["Epic"] = {
+	Epic = {
 		order = 3,
 		color = Color3.fromRGB(225, 0, 255),
+		goldValue = 500,
 	},
 
-	["Legendary"] = {
+	Legendary = {
 		order = 4,
 		color = Color3.fromRGB(255, 166, 0),
+		goldValue = 1000,
 	},
 
-	["Mythic"] = {
+	Mythic = {
 		order = 5,
 		color = Color3.fromRGB(255, 22, 22),
+		goldValue = 2000,
 	},
 }
 
