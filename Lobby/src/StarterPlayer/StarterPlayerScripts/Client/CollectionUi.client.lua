@@ -89,11 +89,11 @@ local function loadFamous(data)
                 total += 1
                 famousUi.FamousHolder.FamousName.BackgroundColor3 = General.RarityData[famousData.Rarity].color:Lerp(Color3.fromRGB(0,0,0), 0.75)
                 famousUi.FamousHolder.FamousImage.ImageColor3 = Color3.fromRGB(255, 255, 255)
-                famousUi.FamousHolder.FamousQuantity.Text = "x" .. #playerFamousData
+                --famousUi.FamousHolder.FamousQuantity.Text = "x" .. #playerFamousData
             else
                 famousUi.FamousHolder.FamousName.BackgroundColor3 = Color3.fromRGB(0,0,0)
                 famousUi.FamousHolder.FamousImage.ImageColor3 = Color3.fromRGB(0, 0, 0)
-                famousUi.FamousHolder.FamousQuantity.Text = ""
+                --famousUi.FamousHolder.FamousQuantity.Text = ""
             end
 
             famousUi.Parent = famousPlace

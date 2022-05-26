@@ -47,21 +47,17 @@ function ClientService.InitializeClient(player, profile)
         ToolService:PlayerStats(player, character.Humanoid)
     end
 
-    for id, uniqueIds in pairs(profile.Data.Shovels) do
+    for id, uniqueId in pairs(profile.Data.Shovels) do
         local shovelType, shovelData = getDataById(ShovelData, id)
         if shovelData then
-            for _, uniqueId in pairs(uniqueIds) do
-                ToolService:LoadShovel(player, shovelType, uniqueId)
-            end
+            ToolService:LoadShovel(player, shovelType, uniqueId)
         end
     end
 
-    for id, uniqueIds in pairs(profile.Data.Famous) do
+    for id, uniqueId in pairs(profile.Data.Famous) do
         local famousType, famousData = getDataById(FamousData, id)
         if famousData then
-            for _, uniqueId in pairs(uniqueIds) do
-                ToolService:LoadFamous(player, famousType, uniqueId)
-            end
+            ToolService:LoadFamous(player, famousType, uniqueId)
         end
     end
 end

@@ -15,6 +15,9 @@ local DataBase = ReplicatedStorage.Database
 local ShovelData = require(DataBase:WaitForChild("ShovelData"))
 local FamousData = require(DataBase:WaitForChild("FamousData"))
 
+local Utility = ReplicatedStorage:WaitForChild("Utility")
+local General = require(Utility:WaitForChild("General"))
+
 local Remotes = ReplicatedStorage.Remotes
 local PrestigeRemote = Remotes.PrestigeRemote
 
@@ -108,26 +111,24 @@ function DataManager:NewShovel(player, shovelType, cost)
 	local shovelData = ShovelData[shovelType]
 
 	if playerProfile and shovelData then
+		local uniqueId = HttpService:GenerateGUID(false)
+
+		if playerProfile.Data.Shovels[tostring(shovelData.id)] then
+			return false
+		end
+
 		if cost then
 			if playerProfile.Data.Gold >= cost then
 				DataManager:GiveGold(player, -cost, true)
+				ToolService:LoadShovel(player, shovelType, uniqueId)
 			else
 				return false
 			end
 		end
 
-		if not playerProfile.Data.Shovels[tostring(shovelData.id)] then
-			playerProfile.Data.Shovels[tostring(shovelData.id)] = {}
-		end
+		playerProfile.Data.Shovels[tostring(shovelData.id)] = uniqueId
 
-		local uniqueId = HttpService:GenerateGUID(false)
-		table.insert(playerProfile.Data.Shovels[tostring(shovelData.id)], uniqueId)
-
-		if cost then
-			ToolService:LoadShovel(player, shovelType, uniqueId)
-		end
-
-		return playerProfile.Data.Shovels[tostring(shovelData.id)]
+		return true
 	end
 end
 
@@ -136,18 +137,17 @@ function DataManager:NewFamous(player, famousType)
 	local famousData = FamousData[famousType]
 
 	if playerProfile and famousData then
-		if not playerProfile.Data.Famous[tostring(famousData.id)] then
-			playerProfile.Data.Famous[tostring(famousData.id)] = {}
+		if playerProfile.Data.Famous[tostring(famousData.id)] then
+			local gold = General.RarityData[famousData.Rarity].goldValue
+			DataManager:GiveGold(player, gold, true)
+		else
+			local uniqueId = HttpService:GenerateGUID(false)
+			playerProfile.Data.Famous[tostring(famousData.id)] = uniqueId
+			ToolService:LoadFamous(player, famousType, uniqueId)
+			PlayerValues:SetValue(player, "Famous", playerProfile.Data.Famous, "playerOnly")
 		end
 
-		local uniqueId = HttpService:GenerateGUID(false)
-		table.insert(playerProfile.Data.Famous[tostring(famousData.id)], uniqueId)
-
-		ToolService:LoadFamous(player, famousType, uniqueId)
-
-		PlayerValues:SetValue(player, "Famous", playerProfile.Data.Famous, "playerOnly")
-
-		return playerProfile.Data.Famous[tostring(famousData.id)]
+		return true
 	end
 end
 
@@ -155,23 +155,17 @@ function DataManager:SellTool(player, dataType, uniqueId, gold)
 	local playerProfile = self:GetProfile(player)
 
 	if playerProfile then
-		for id, uniqueIds in pairs(playerProfile.Data[dataType]) do
-			for key, dataUniqueId in pairs(uniqueIds) do
-				if tostring(dataUniqueId) == tostring(uniqueId) then
-					table.remove(playerProfile.Data[dataType][id], key)
+		for id, dataUniqueId in pairs(playerProfile.Data[dataType]) do
+			if tostring(dataUniqueId) == tostring(uniqueId) then
+				playerProfile.Data[dataType][id] = nil
 
-					if next(playerProfile.Data[dataType][id]) == nil then
-						playerProfile.Data[dataType][id] = nil
-					end
+				DataManager:GiveGold(player, gold, true)
 
-					DataManager:GiveGold(player, gold, true)
-
-					if dataType == "Famous" then
-						PlayerValues:SetValue(player, "Famous", playerProfile.Data.Famous, "playerOnly")
-					end
-
-					return true
+				if dataType == "Famous" then
+					PlayerValues:SetValue(player, "Famous", playerProfile.Data.Famous, "playerOnly")
 				end
+
+				return true
 			end
 		end
 	end
@@ -197,7 +191,7 @@ function DataManager:Prestige(player)
 			playerProfile.Data.Prestige += 1
 
 			PlayerValues:SetValue(player, "Famous", playerProfile.Data.Famous, "playerOnly")
-			PlayerValues:SetValue(player, "Gold", 0, "playerOnly")
+			PlayerValues:SetValue(player, "Gold", playerProfile.Data.Gold, "playerOnly")
 			PlayerValues:SetValue(player, "Prestige", playerProfile.Data.Prestige, "playerOnly")
 
 			player:LoadCharacter()
