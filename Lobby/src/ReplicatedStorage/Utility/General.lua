@@ -4,13 +4,13 @@ General.ShovelValue = 0.2
 General.ChancePartDivider = 3
 
 General.ItemChances = {
-    Mythic = 7000,
-    Legendary = 3000,
+    Mythic = 5000,
+    Legendary = 2500,
     Epic = 1000,
     Rare = 500,
     Common = 100,
 
-    GoldChestLegendary = 3000,
+    GoldChestLegendary = 2500,
     GoldChestRare = 500,
     GoldChestCommon = 100,
 
