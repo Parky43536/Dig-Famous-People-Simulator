@@ -130,9 +130,10 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 				local rng = Random.new()
 				for key, chance in pairs(General.ItemChances) do
 					if not chanceParts[key] then chanceParts[key] = {} end
+					if player == "Server" and key == "Bomb" then continue end
 
 					local luckMulti = 1
-					if not General.ChanceLuckIgnore[key] then
+					if not General.ChanceLuckIgnore[key] and player ~= "Server" then
 						luckMulti = ((PlayerValues:GetValue(player, "Luck") or 1) - 1) * 2
 					end
 

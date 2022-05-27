@@ -9,6 +9,7 @@ local Values = ReplicatedStorage.Values
 local Physics = ReplicatedStorage.Physics
 local PartManager = require(Physics.PartManager)
 local ChunkService = require(Physics.ChunkService)
+local ExplosionService
 
 local DataBase = ReplicatedStorage.Database
 local ShovelData = require(DataBase:WaitForChild("ShovelData"))
@@ -20,6 +21,8 @@ local DataManager = require(SerServices.DataManager)
 local Utility = ReplicatedStorage:WaitForChild("Utility")
 local CharacterService = require(Utility:WaitForChild("CharacterService"))
 local General = require(Utility:WaitForChild("General"))
+local TweenService = require(Utility:WaitForChild("TweenService"))
+local AudioService = require(Utility:WaitForChild("AudioService"))
 
 local MapService = {}
 local FamousPrompts = {}
@@ -183,10 +186,50 @@ function MapService:ChanceParts(chanceParts)
         chestHandler(chanceParts.GoldChestCommon, "GoldChestCommon")
     end
 
+    if chanceParts.Bomb then
+        for _,part in pairs(chanceParts.Bomb) do
+            if coveredPart(part) then
+                local Bomb = Assets.MapAssets.Bomb:Clone()
+                Bomb:PivotTo(part.CFrame * CFrame.Angles(0, math.random(0, 360), 0))
+                Bomb.Parent = part.Parent
+                part:Destroy()
+
+                task.spawn(function()
+                    repeat task.wait(2) until not coveredPart(part)
+                    --AudioService:Create(16433289, Bomb.Position, {Volume = 0.8})
+                    task.wait(2)
+
+                    local size = 20
+
+                    if not ExplosionService then ExplosionService = require(Physics.ExplosionService) end
+                    ExplosionService.create("Server", Bomb.Position, 15, 15)
+
+                    local particle = Assets.MapAssets.Explosion:Clone()
+                    particle:PivotTo(Bomb.CFrame)
+                    particle.Parent = workspace
+
+                    AudioService:Create(16433289, Bomb.Position, {Volume = 0.8})
+
+                    local growsize = Vector3.new(size, size, size)
+                    local goal = {Transparency = 0.9, Size = growsize}
+                    local properties = {Time = 0.15}
+                    TweenService.tween(particle, goal, properties)
+
+                    local goal = {Transparency = 1}
+                    local properties = {Time = 1.35}
+                    TweenService.tween(particle, goal, properties)
+
+                    game.Debris:AddItem(particle, 1.5)
+                    Bomb:Destroy()
+                end)
+            end
+        end
+    end
+
     if chanceParts.Crystal then
         for _,part in pairs(chanceParts.Crystal) do
             if coveredPart(part) then
-                local crystal = Assets.MapAssets.Crystals:Clone()
+                local crystal = Assets.MapAssets.Crystal:Clone()
                 crystal:PivotTo(part.CFrame * CFrame.Angles(0, math.random(0, 360), 0))
                 crystal.Outside.Color = Color3.fromRGB(math.random(100,255),math.random(100,255),math.random(100,255))
                 crystal.Outside.PointLight.Color = crystal.Outside.Color

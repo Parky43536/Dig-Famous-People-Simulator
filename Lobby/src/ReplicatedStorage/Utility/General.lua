@@ -15,6 +15,8 @@ General.ItemChances = {
     GoldChestRare = 500,
     GoldChestCommon = 100,
 
+	Bomb = 250,
+
     Crystal = 50,
     Variety = 3,
 }
