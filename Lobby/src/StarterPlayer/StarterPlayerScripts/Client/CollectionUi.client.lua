@@ -61,14 +61,15 @@ local function loadFamous(data)
     local famousPlace = CollectionUi.CollectionFrame.ScrollingFrame
 
     for id = 1 , lengthOfFamousData do
-        local famousUi = famousPlace:FindFirstChild(id)
-        local playerFamousData = data[tostring(id)]
         local famousId, famousData = getDataById(FamousData, id)
 
         if famousId then
+            local famousUi = famousPlace:FindFirstChild(famousId)
+            local playerFamousData = data[tostring(id)]
+
             if not famousUi then
                 famousUi = Assets.Ui.Famous:Clone()
-                famousUi.Name = id
+                famousUi.Name = famousId
                 famousUi.LayoutOrder = General.RarityData[famousData.Rarity].order
 
                 task.spawn(function()

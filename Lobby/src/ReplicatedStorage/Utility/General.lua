@@ -4,15 +4,16 @@ General.ShovelValue = 0.2
 General.ChancePartDivider = 3
 
 General.ItemChances = {
-    Mythic = 5000,
-    Legendary = 2500,
-    Epic = 1000,
+	Godly = 15000,
+    Mythic = 7500,
+    Legendary = 3000,
+    Epic = 1500,
     Rare = 500,
     Common = 100,
 
-    GoldChestLegendary = 2500,
+    GoldChestLegendary = 3000,
     GoldChestRare = 500,
-    GoldChestCommon = 100,
+    GoldChestCommon = 50,
 
     Crystal = 50,
     Variety = 3,
@@ -62,7 +63,13 @@ General.RarityData = {
 	Mythic = {
 		order = 5,
 		color = Color3.fromRGB(255, 22, 22),
-		goldValue = 2000,
+		goldValue = 5000,
+	},
+
+	Godly = {
+		order = 6,
+		color = Color3.fromRGB(0, 225, 255),
+		goldValue = 10000,
 	},
 }
 

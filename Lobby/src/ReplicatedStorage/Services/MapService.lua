@@ -123,7 +123,7 @@ function MapService:ChanceParts(chanceParts)
     local function chestHandler(tabler, rarity)
         for _,part in pairs(tabler) do
             if coveredPart(part) then
-                local chest = Assets.Chests:FindFirstChild(rarity):Clone()
+                local chest = Assets.MapAssets:FindFirstChild(rarity):Clone()
                 chest:PivotTo(part.CFrame * CFrame.Angles(0, math.rad(math.random(0, 360)), 0))
 
                 if not workspace.Map:FindFirstChild("ChanceParts") then
@@ -186,7 +186,7 @@ function MapService:ChanceParts(chanceParts)
     if chanceParts.Crystal then
         for _,part in pairs(chanceParts.Crystal) do
             if coveredPart(part) then
-                local crystal = Assets.Crystals.Default:Clone()
+                local crystal = Assets.MapAssets.Crystals:Clone()
                 crystal:PivotTo(part.CFrame * CFrame.Angles(0, math.random(0, 360), 0))
                 crystal.Outside.Color = Color3.fromRGB(math.random(100,255),math.random(100,255),math.random(100,255))
                 crystal.Outside.PointLight.Color = crystal.Outside.Color
@@ -264,32 +264,45 @@ local function teleportPlayers()
 end
 
 local function initalizeShovels()
-    for _,stand in pairs(workspace.Map.Shovels:GetChildren()) do
-        local shovelData = ShovelData[stand.Name]
+    for _,standHolder in pairs(workspace.Map.Shovels:GetChildren()) do
+        local shovelData = ShovelData[standHolder.Name]
         if shovelData then
-            local Shovel = Assets.Shovels:FindFirstChild(stand.Name).Shovel:Clone()
-            Shovel:PivotTo(stand.ShovelHolder.CFrame)
+            local Stand
+            if shovelData.Special then
+                Stand = Assets.MapAssets.SpecialShovelStand:Clone()
+            else
+                Stand = Assets.MapAssets.ShovelStand:Clone()
+            end
+
+            Stand.Name = standHolder.Name
+            Stand:PivotTo(standHolder.CFrame)
+            Stand.Parent = standHolder.Parent
+
+            standHolder:Destroy()
+
+            local Shovel = Assets.Shovels:FindFirstChild(Stand.Name).Shovel:Clone()
+            Shovel:PivotTo(Stand.ShovelHolder.CFrame)
             Shovel.Anchored = true
-            Shovel.Parent = stand.ShovelHolder
+            Shovel.Parent = Stand.ShovelHolder
 
-            stand.ShovelName.SurfaceGui.Frame.TextLabel.Text = stand.Name
-            stand.ShovelName.Color = shovelData.Color
+            Stand.ShovelName.SurfaceGui.Frame.TextLabel.Text = Stand.Name
+            Stand.ShovelName.Color = shovelData.Color
 
-            stand.Reload.SurfaceGui.Frame.TextLabel.Text = "Reload:\n" .. shovelData.Stats.Reload
-            stand.Dig.SurfaceGui.Frame.TextLabel.Text = "Dig:\n" .. shovelData.Stats.Dig
-            stand.Speed.SurfaceGui.Frame.TextLabel.Text = "Speed:\n" .. shovelData.Stats.Speed
-            stand.Jump.SurfaceGui.Frame.TextLabel.Text = "Jump:\n" .. shovelData.Stats.Jump
-            stand.GMulti.SurfaceGui.Frame.TextLabel.Text = "G Multi:\n" .. shovelData.Stats.GMulti
-            stand.Luck.SurfaceGui.Frame.TextLabel.Text = "Luck:\n" .. shovelData.Stats.Luck
+            Stand.Reload.SurfaceGui.Frame.TextLabel.Text = "Reload:\n" .. shovelData.Stats.Reload
+            Stand.Dig.SurfaceGui.Frame.TextLabel.Text = "Dig:\n" .. shovelData.Stats.Dig
+            Stand.Speed.SurfaceGui.Frame.TextLabel.Text = "Speed:\n" .. shovelData.Stats.Speed
+            Stand.Jump.SurfaceGui.Frame.TextLabel.Text = "Jump:\n" .. shovelData.Stats.Jump
+            Stand.GMulti.SurfaceGui.Frame.TextLabel.Text = "G Multi:\n" .. shovelData.Stats.GMulti
+            Stand.Luck.SurfaceGui.Frame.TextLabel.Text = "Luck:\n" .. shovelData.Stats.Luck
 
-            stand.ShovelHolder.ShovelPrompt.ObjectText = stand.Name
-            stand.ShovelHolder.ShovelPrompt.ActionText = "Buy for " .. shovelData.Cost .. " Gold?"
+            Stand.ShovelHolder.ShovelPrompt.ObjectText = Stand.Name
+            Stand.ShovelHolder.ShovelPrompt.ActionText = "Buy for " .. shovelData.Cost .. " Gold?"
 
             local shovelPrompt = {
-                prompt = stand.ShovelHolder.ShovelPrompt,
-                shovelType = stand.Name,
+                prompt = Stand.ShovelHolder.ShovelPrompt,
+                shovelType = Stand.Name,
                 cost = shovelData.Cost,
-                model = stand,
+                model = Stand,
             }
             table.insert(ShovelPrompts, shovelPrompt)
         end

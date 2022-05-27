@@ -247,7 +247,7 @@ local FamousData = {
     ["82471"]= {
         id = "50",
         Name = "Dued1",
-        Rarity = "Common",
+        Rarity = "Rare",
     },
     ["22"]= {
         id = "51",
@@ -298,6 +298,331 @@ local FamousData = {
         id = "60",
         Name = "CloneTrooper1019",
         Rarity = "Mythic",
+    },
+    ["1320922"]= {
+        id = "61",
+        Name = "Defaultio",
+        Rarity = "Rare",
+    },
+    ["2312310"]= {
+        id = "62",
+        Name = "loleris",
+        Rarity = "Godly",
+    },
+    ["41163986"]= {
+        id = "63",
+        Name = "Vurse",
+        Rarity = "Legendary",
+    },
+    ["2207291"]= {
+        id = "64",
+        Name = "Linkmon99",
+        Rarity = "Godly",
+    },
+    ["151751026"]= {
+        id = "65",
+        Name = "Hippie_ofDoom",
+        Rarity = "Epic",
+    },
+    ["24809"]= {
+        id = "66",
+        Name = "JJ5x5",
+        Rarity = "Rare",
+    },
+    ["1659965"]= {
+        id = "67",
+        Name = "buildthomas",
+        Rarity = "Rare",
+    },
+    ["18586750"]= {
+        id = "68",
+        Name = "r0cu",
+        Rarity = "Legendary",
+    },
+    ["74963446"]= {
+        id = "69",
+        Name = "KonekoKittenWasTaken",
+        Rarity = "Common",
+    },
+    ["138235305"]= {
+        id = "70",
+        Name = "SabrinaBrite",
+        Rarity = "Epic",
+    },
+    ["180057364"]= {
+        id = "71",
+        Name = "DJMonopoli",
+        Rarity = "Common",
+    },
+    ["13953438"]= {
+        id = "72",
+        Name = "NewFissy",
+        Rarity = "Godly",
+    },
+    ["29622"]= {
+        id = "73",
+        Name = "callmehbob",
+        Rarity = "Mythic",
+    },
+    ["20349956"]= {
+        id = "74",
+        Name = "Nosniy",
+        Rarity = "Epic",
+    },
+    ["23239501"]= {
+        id = "75",
+        Name = "DevRolve",
+        Rarity = "Legendary",
+    },
+    ["3991272"]= {
+        id = "76",
+        Name = "Pokediger1",
+        Rarity = "Common",
+    },
+    ["15319024"]= {
+        id = "77",
+        Name = "ObscureEntity",
+        Rarity = "Legendary",
+    },
+    ["2364169"]= {
+        id = "78",
+        Name = "Cindering",
+        Rarity = "Epic",
+    },
+    ["4402987"]= {
+        id = "79",
+        Name = "AbstractAlex",
+        Rarity = "Rare",
+    },
+    ["31323231"]= {
+        id = "80",
+        Name = "Usering",
+        Rarity = "Epic",
+    },
+    ["2600997"]= {
+        id = "81",
+        Name = "Cracky4",
+        Rarity = "Common",
+    },
+    ["554744114"]= {
+        id = "82",
+        Name = "SamsonXVI",
+        Rarity = "Common",
+    },
+    ["799258"]= {
+        id = "83",
+        Name = "madattak",
+        Rarity = "Common",
+    },
+    ["5725475"]= {
+        id = "84",
+        Name = "litozinnamon",
+        Rarity = "Epic",
+    },
+    ["7733466"]= {
+        id = "85",
+        Name = "InceptionTime",
+        Rarity = "Legendary",
+    },
+    ["13416513"]= {
+        id = "86",
+        Name = "Merely",
+        Rarity = "Epic",
+    },
+    ["1084073"]= {
+        id = "87",
+        Name = "tbradm",
+        Rarity = "Legendary",
+    },
+    ["3736574"]= {
+        id = "88",
+        Name = "Bloxtun",
+        Rarity = "Common",
+    },
+    ["281519"]= {
+        id = "89",
+        Name = "Gusmanak",
+        Rarity = "Epic",
+    },
+    ["13042801"]= {
+        id = "90",
+        Name = "Ultraw",
+        Rarity = "Rare",
+    },
+    ["53537032"]= {
+        id = "91",
+        Name = "Aesthetical",
+        Rarity = "Mythic",
+    },
+    ["7568292"]= {
+        id = "92",
+        Name = "TypicalType",
+        Rarity = "Mythic",
+    },
+    ["35392"]= {
+        id = "93",
+        Name = "Polyhex",
+        Rarity = "Epic",
+    },
+    ["30031949"]= {
+        id = "94",
+        Name = "silky_dev",
+        Rarity = "Rare",
+    },
+    ["7140919"]= {
+        id = "95",
+        Name = "MrWindy",
+        Rarity = "Common",
+    },
+    ["5600283"]= {
+        id = "96",
+        Name = "Seranok",
+        Rarity = "Epic",
+    },
+    ["3999138"]= {
+        id = "97",
+        Name = "DieSoft",
+        Rarity = "Common",
+    },
+    ["1852246"]= {
+        id = "98",
+        Name = "Wsly",
+        Rarity = "Rare",
+    },
+    ["2231221"]= {
+        id = "99",
+        Name = "TheGamer101",
+        Rarity = "Godly",
+    },
+    ["1741242"]= {
+        id = "100",
+        Name = "Den_S",
+        Rarity = "Common",
+    },
+    ["41127213"]= {
+        id = "101",
+        Name = "tktech",
+        Rarity = "Common",
+    },
+    ["795186"]= {
+        id = "102",
+        Name = "TwentyTwoPilots",
+        Rarity = "Common",
+    },
+    ["21748114"]= {
+        id = "103",
+        Name = "Myzta",
+        Rarity = "Epic",
+    },
+    ["1315"]= {
+        id = "104",
+        Name = "Reverse_Polarity",
+        Rarity = "Rare",
+    },
+    ["247535"]= {
+        id = "105",
+        Name = "Crazyblox",
+        Rarity = "Rare",
+    },
+    ["8094904"]= {
+        id = "106",
+        Name = "InsanelyLuke",
+        Rarity = "Epic",
+    },
+    ["9769187"]= {
+        id = "107",
+        Name = "4Sci",
+        Rarity = "Epic",
+    },
+    ["112488179"]= {
+        id = "108",
+        Name = "Shyfoox",
+        Rarity = "Common",
+    },
+    ["5866753"]= {
+        id = "109",
+        Name = "Simoon68",
+        Rarity = "Godly",
+    },
+    ["1696941"]= {
+        id = "110",
+        Name = "opplo",
+        Rarity = "Rare",
+    },
+    ["341206540"]= {
+        id = "111",
+        Name = "chewbeccca",
+        Rarity = "Rare",
+    },
+    ["29806839"]= {
+        id = "112",
+        Name = "ConnorVIII",
+        Rarity = "Rare",
+    },
+    ["18940256"]= {
+        id = "113",
+        Name = "DevUItra",
+        Rarity = "Rare",
+    },
+    ["1796872"]= {
+        id = "114",
+        Name = "HenryDev",
+        Rarity = "Common",
+    },
+    ["38023771"]= {
+        id = "115",
+        Name = "Evanbear1",
+        Rarity = "Common",
+    },
+    ["3089945"]= {
+        id = "116",
+        Name = "moded",
+        Rarity = "Common",
+    },
+    ["56449"]= {
+        id = "117",
+        Name = "ReeseMcBlox",
+        Rarity = "Epic",
+    },
+    ["182316511"]= {
+        id = "118",
+        Name = "BSlickMusic",
+        Rarity = "Epic",
+    },
+    ["2217098"]= {
+        id = "119",
+        Name = "Firebrand1",
+        Rarity = "Rare",
+    },
+    ["13042729"]= {
+        id = "120",
+        Name = "younite",
+        Rarity = "Rare",
+    },
+    ["357945637"]= {
+        id = "121",
+        Name = "Bethink",
+        Rarity = "Rare",
+    },
+    ["1141336"]= {
+        id = "122",
+        Name = "TheAmazeman",
+        Rarity = "Legendary",
+    },
+    ["157180286"]= {
+        id = "123",
+        Name = "Sk3tchYT",
+        Rarity = "Common",
+    },
+    ["707412972"]= {
+        id = "124",
+        Name = "TheMeganPlays",
+        Rarity = "Common",
+    },
+    ["270896527"]= {
+        id = "125",
+        Name = "notiamsanna",
+        Rarity = "Common",
     },
 }
 

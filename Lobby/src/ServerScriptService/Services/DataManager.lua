@@ -173,7 +173,6 @@ function DataManager:GiveGold(player, gold, minMax)
 	gold = math.floor(gold * (PlayerValues:GetValue(player, "GMulti") or 1))
 
 	if minMax then
-		print(minMax)
 		gold = math.clamp(gold, minMax.min, minMax.max)
 	end
 

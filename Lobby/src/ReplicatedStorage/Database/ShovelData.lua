@@ -2,7 +2,6 @@ local ShovelData = {
 	["Default Shovel"] = {
 		id = 1,
 		Cost = 0,
-		Color = Color3.fromRGB(211, 190, 150),
 		Stats = {
 			Reload = 1.5,
 			Dig = 7,
@@ -13,77 +12,161 @@ local ShovelData = {
 		}
 	},
 
-	["Super Shovel"] = {
+	["Great Shovel"] = {
 		id = 2,
 		Cost = 2500,
-		Color = Color3.fromRGB(226, 64, 64),
+		Color = Color3.fromRGB(201, 166, 90),
 		Stats = {
 			Reload = 1.4,
 			Dig = 7.5,
-			Speed = 17,
+			Speed = 16.5,
 			Jump = 7.5,
 			GMulti = 1.1,
 			Luck = 1.1,
 		}
 	},
 
-	["Mega Shovel"] = {
+	["Super Shovel"] = {
 		id = 3,
-		Cost = 10000,
-		Color = Color3.fromRGB(161, 64, 226),
+		Cost = 5000,
+		Color = Color3.fromRGB(226, 64, 64),
 		Stats = {
 			Reload = 1.3,
 			Dig = 8,
-			Speed = 18,
+			Speed = 17,
 			Jump = 8,
 			GMulti = 1.2,
 			Luck = 1.2,
 		}
 	},
 
-	["Ultra Shovel"] = {
+	["Super Light Shovel"] = {
 		id = 4,
+		Cost = 10000,
+		Color = Color3.fromRGB(221, 114, 114),
+		Stats = {
+			Reload = 1.2, --less 0.1
+			Dig = 8, --same
+			Speed = 20, --more 3
+			Jump = 10, --more 2
+			GMulti = 1.2, --same
+			Luck = 1.4, --more 0.2
+		}
+	},
+
+	["Super Heavy Shovel"] = {
+		id = 5,
+		Cost = 12500,
+		Color = Color3.fromRGB(170, 49, 49),
+		Stats = {
+			Reload = 1.5, --default
+			Dig = 10, --more 2
+			Speed = 16, --default
+			Jump = 7.2, --default
+			GMulti = 1.4, --more 0.2
+			Luck = 1.2, --same
+		}
+	},
+
+	["Mega Shovel"] = {
+		id = 6,
 		Cost = 25000,
-		Color = Color3.fromRGB(249, 255, 161),
+		Color = Color3.fromRGB(69, 226, 64),
 		Stats = {
 			Reload = 1.2,
 			Dig = 9,
-			Speed = 20,
-			Jump = 10,
-			GMulti = 1.3,
-			Luck = 1.3,
-		}
-	},
-
-	["Heavy Shovel"] = {
-		id = 5,
-		Cost = 70000,
-		Color = Color3.fromRGB(13, 148, 1),
-		Stats = {
-			Reload = 1.5,
-			Dig = 14,
-			Speed = 16,
-			Jump = 7.2,
+			Speed = 18,
+			Jump = 9,
 			GMulti = 1.4,
-			Luck = 1.1,
-		}
-	},
-
-	["Light Shovel"] = {
-		id = 6,
-		Cost = 100000,
-		Color = Color3.fromRGB(87, 68, 255),
-		Stats = {
-			Reload = 1,
-			Dig = 9,
-			Speed = 25,
-			Jump = 15,
-			GMulti = 1.1,
 			Luck = 1.4,
 		}
 	},
 
-	["Adurite Shovel"] = {
+	["Mega Light Shovel"] = {
+		id = 7,
+		Cost = 35000,
+		Color = Color3.fromRGB(123, 221, 114),
+		Stats = {
+			Reload = 1.1,
+			Dig = 9,
+			Speed = 23,
+			Jump = 13,
+			GMulti = 1.4,
+			Luck = 1.6,
+		}
+	},
+
+	["Mega Heavy Shovel"] = {
+		id = 8,
+		Cost = 37500,
+		Color = Color3.fromRGB(63, 170, 49),
+		Stats = {
+			Reload = 1.5,
+			Dig = 11,
+			Speed = 16,
+			Jump = 7.2,
+			GMulti = 1.6,
+			Luck = 1.4,
+		}
+	},
+
+	["Ultra Shovel"] = {
+		id = 6,
+		Cost = 60000,
+		Color = Color3.fromRGB(64, 67, 226),
+		Stats = {
+			Reload = 1.1,
+			Dig = 10,
+			Speed = 20,
+			Jump = 10,
+			GMulti = 1.6,
+			Luck = 1.6,
+		}
+	},
+
+	["Ultra Light Shovel"] = {
+		id = 7,
+		Cost = 72500,
+		Color = Color3.fromRGB(121, 114, 221),
+		Stats = {
+			Reload = 1,
+			Dig = 10,
+			Speed = 26,
+			Jump = 16,
+			GMulti = 1.6,
+			Luck = 1.8,
+		}
+	},
+
+	["Ultra Heavy Shovel"] = {
+		id = 8,
+		Cost = 75000,
+		Color = Color3.fromRGB(51, 49, 170),
+		Stats = {
+			Reload = 1.5,
+			Dig = 12,
+			Speed = 16,
+			Jump = 7.2,
+			GMulti = 1.8,
+			Luck = 1.6,
+		}
+	},
+
+	["Supreme Shovel"] = {
+		id = 9,
+		Cost = 100000,
+		Color = Color3.fromRGB(139, 41, 148),
+		Stats = {
+			Reload = 1,
+			Dig = 10,
+			Speed = 25,
+			Jump = 15,
+			GMulti = 2,
+			Luck = 2,
+		}
+	},
+
+	--[[["Adurite Shovel"] = {
 		id = 7,
 		Cost = 200000,
 		Color = Color3.fromRGB(136, 0, 0),
@@ -165,6 +248,6 @@ local ShovelData = {
 			GMulti = 1.8,
 			Luck = 1.8,
 		}
-	},
+	},]]
 }
 return ShovelData
