@@ -5,13 +5,13 @@ General.ChancePartDivider = 3
 
 General.ItemChances = {
 	Godly = 15000,
-    Mythic = 7500,
-    Legendary = 3000,
+    Mythic = 10000,
+    Legendary = 5000,
     Epic = 1500,
     Rare = 500,
     Common = 100,
 
-    GoldChestLegendary = 3000,
+    GoldChestLegendary = 5000,
     GoldChestRare = 500,
     GoldChestCommon = 100,
 
