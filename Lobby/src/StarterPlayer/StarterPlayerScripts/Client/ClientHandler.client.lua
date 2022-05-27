@@ -63,13 +63,6 @@ local function loadGold(value)
     end
 end
 
-local function loadPrestige(value)
-    if SideFrame then
-        SideFrame.CollectionAndStats.Stats.Prestige.Text = "Prestige: " .. value
-        SideFrame.CollectionAndStats.Stats.Prestige.Visible = (value ~= 0)
-    end
-end
-
 local function showStats(newStats)
     if SideFrame then
         for stat, value in pairs(newStats) do
@@ -91,14 +84,9 @@ PlayerValues:SetCallback("Gold", function(player, value)
     loadGold(value)
 end)
 
-PlayerValues:SetCallback("Prestige", function(player, value)
-    loadPrestige(value)
-end)
-
 ClientConnection.OnClientEvent:Connect(function(action, args)
     if action == "loadPlayerValues" then
         loadGold(PlayerValues:GetValue(LocalPlayer, "Gold"))
-        loadPrestige(PlayerValues:GetValue(LocalPlayer, "Prestige"))
     elseif action == "showPlayerStats" then
         showStats(args.newStats)
     end

@@ -22,7 +22,6 @@ local CollectionUi = PlayerGui:WaitForChild("CollectionUi")
 
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local CollectionConnection = Remotes:WaitForChild("CollectionConnection")
-local PrestigeRemote = Remotes:WaitForChild("PrestigeRemote")
 
 local function collectionUiEnable()
     if CollectionUi.Enabled == true then
@@ -38,10 +37,6 @@ end)
 
 CollectionUi.CollectionFrame.TopFrame.Close.Activated:Connect(function()
     collectionUiEnable()
-end)
-
-CollectionUi.CollectionFrame.BottomFrame.Prestige.Activated:Connect(function()
-    PrestigeRemote:FireServer("prestige")
 end)
 
 local function length(Table)
@@ -101,21 +96,6 @@ local function loadFamous(data)
     end
 
     SideFrame.CollectionAndStats.CollectionAmount.Text = total .. "/" .. lengthOfFamousData
-
-    local prestigeButton = CollectionUi.CollectionFrame.BottomFrame.Prestige
-    if total == lengthOfFamousData then
-        prestigeButton.BackgroundColor3 = Color3.fromRGB(0, 213, 255)
-        prestigeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        prestigeButton.UIGradient.Enabled = true
-        prestigeButton.AutoButtonColor = true
-        prestigeButton.Active = true
-    else
-        prestigeButton.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
-        prestigeButton.TextColor3 = Color3.fromRGB(136, 136, 136)
-        prestigeButton.UIGradient.Enabled = false
-        prestigeButton.AutoButtonColor = false
-        prestigeButton.Active = false
-    end
 end
 
 PlayerValues:SetCallback("Famous", function(player, value)

@@ -33,15 +33,14 @@ local DigCooldown = {}
 function ToolService:PlayerStats(player, Humanoid, shovelStats)
     if not shovelStats then shovelStats = {} end
     local defaultStats = ShovelData["Default Shovel"].Stats
-    local prestige = PlayerValues:GetValue(player, "Prestige") or 0
 
     local newStats = {
         Reload = (shovelStats.Reload or defaultStats.Reload),
         Dig = (shovelStats.Dig or defaultStats.Dig),
-        Speed = (shovelStats.Speed or defaultStats.Speed) + General.PrestigeBonus.Speed * prestige,
-        Jump = (shovelStats.Jump or defaultStats.Jump) + General.PrestigeBonus.Jump * prestige,
-        GMulti = (shovelStats.GMulti or defaultStats.GMulti) + General.PrestigeBonus.GMulti * prestige,
-        Luck = (shovelStats.Luck or defaultStats.Luck) + General.PrestigeBonus.Luck * prestige,
+        Speed = (shovelStats.Speed or defaultStats.Speed),
+        Jump = (shovelStats.Jump or defaultStats.Jump),
+        GMulti = (shovelStats.GMulti or defaultStats.GMulti),
+        Luck = (shovelStats.Luck or defaultStats.Luck),
     }
 
     Humanoid.WalkSpeed = newStats.Speed
