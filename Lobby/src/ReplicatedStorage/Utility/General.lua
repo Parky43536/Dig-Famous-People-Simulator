@@ -13,7 +13,7 @@ General.ItemChances = {
 
     GoldChestLegendary = 3000,
     GoldChestRare = 500,
-    GoldChestCommon = 50,
+    GoldChestCommon = 100,
 
     Crystal = 50,
     Variety = 3,

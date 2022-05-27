@@ -8,6 +8,7 @@ local CharacterService = {}
 local blockedAccessories = {
 	["Jacket-TrenchCoat-White-8648380153"] = true,
 	["DuckyFloatie"] = true,
+	["Tri Color Tshirt"] = true,
 }
 
 function CharacterService:CreateCharacterIcon(userId)

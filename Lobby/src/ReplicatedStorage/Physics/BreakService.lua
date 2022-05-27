@@ -133,7 +133,7 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 
 					local luckMulti = 1
 					if not General.ChanceLuckIgnore[key] then
-						luckMulti = ((PlayerValues:GetValue(player, "Luck") or 1) - 1) * 5
+						luckMulti = ((PlayerValues:GetValue(player, "Luck") or 1) - 1) * 3
 					end
 
 					if rng:NextInteger(1, chance) <= 1 + luckMulti then
