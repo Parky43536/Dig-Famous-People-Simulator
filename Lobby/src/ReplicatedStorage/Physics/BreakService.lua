@@ -136,7 +136,7 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 						luckMulti = ((PlayerValues:GetValue(player, "Luck") or 1) - 1) * 3
 					end
 
-					if rng:NextInteger(1, chance) <= 1 + luckMulti then
+					if rng:NextInteger(1, chance) <= 2 + luckMulti then
 						table.insert(chanceParts[key], newPart)
 						if not General.ChanceTotalIgnore[key] then
 							chancePartsTotal += 1
