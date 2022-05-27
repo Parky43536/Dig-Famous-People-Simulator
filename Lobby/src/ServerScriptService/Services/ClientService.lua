@@ -30,6 +30,7 @@ end
 function ClientService.InitializeClient(player, profile)
     PlayerValues:SetValue(player, "Famous", profile.Data.Famous, "playerOnly")
     PlayerValues:SetValue(player, "Gold", profile.Data.Gold, "playerOnly")
+    PlayerValues:SetValue(player, "Prestige", profile.Data.Prestige, "playerOnly")
 
     ClientConnection:FireClient(player, "loadPlayerValues")
     CollectionConnection:FireClient(player, "loadPlayerFamous")

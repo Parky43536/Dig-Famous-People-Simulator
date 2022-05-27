@@ -29,6 +29,13 @@ General.ChanceTotalIgnore = {
 	Variety = true,
 }
 
+General.PrestigeBonus = {
+	Speed = 5,
+	Jump = 5,
+	GMulti = 0.5,
+	Luck = 0.5,
+}
+
 General.ChestGold = {
 	GoldChestLegendary = {min = 2500, max = 5000},
 	GoldChestRare = {min = 500, max = 1000},
