@@ -32,8 +32,8 @@ General.ChanceTotalIgnore = {
 General.PrestigeBonus = {
 	Speed = 5,
 	Jump = 5,
-	GMulti = 0.5,
-	Luck = 0.5,
+	GMulti = 1,
+	Luck = 1,
 }
 
 General.ChestGold = {
