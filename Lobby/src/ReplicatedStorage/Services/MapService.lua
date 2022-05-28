@@ -35,6 +35,8 @@ local ChestPrompts = {}
 local ShovelPrompts = {}
 local PowerUpPrompts = {}
 
+MapService.MakingNewMap = false
+
 local rayCastParams = RaycastParams.new()
 rayCastParams.FilterType = Enum.RaycastFilterType.Blacklist
 
@@ -104,6 +106,17 @@ local function getPlayersInRadius(position, radius)
     return playersInRadius
 end
 
+local function comma_value(amount)
+    local formatted = amount
+    while true do
+      formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+        if (k == 0) then
+            break
+        end
+    end
+    return formatted
+end
+
 local function toHMS(s)
     return string.format("%01i:%02i", s/60%60, s%60)
 end
@@ -166,7 +179,7 @@ function MapService:ChanceParts(chanceParts)
                 local gold = rng:NextInteger(General.ChestGold[rarity].min, General.ChestGold[rarity].max)
 
                 chest.Root.ChestPrompt.ObjectText = string.gsub(rarity, "GoldChest", "") .. ", " .. MapService:RoundDeci(1 / ChanceData[rarity].chance * General.ChanceMulti, 2) .. "%"
-                chest.Root.ChestPrompt.ActionText = "Collect " .. gold .. " Gold"
+                chest.Root.ChestPrompt.ActionText = "Collect " .. comma_value(gold) .. " Gold"
 
                 local chestPrompt = {
                     prompt = chest.PrimaryPart.ChestPrompt,
@@ -280,41 +293,53 @@ function MapService:ChanceParts(chanceParts)
 
                 task.spawn(function()
                     repeat task.wait(2) until not coveredPart(Bomb)
-                    for _,particle in pairs(Bomb:GetDescendants()) do
-                        if particle.ClassName == "ParticleEmitter" then
-                            particle.Enabled = true
+                    if Bomb.Parent ~= nil then
+                        for _,particle in pairs(Bomb:GetDescendants()) do
+                            if particle.ClassName == "ParticleEmitter" then
+                                particle.Enabled = true
+                            end
                         end
-                    end
-                    AudioService:Create(11565378, Bomb.Position, {Volume = 0.8, Duration = 2})
+                        AudioService:Create(11565378, Bomb.Position, {Volume = 0.8, Duration = 2})
 
-                    task.wait(2)
+                        task.wait(2)
 
-                    for _,player in pairs(getPlayersInRadius(Bomb.Position, ChanceData["Bomb"].size / 2)) do
-                        if player.Character then
-                            player.Character.Humanoid:TakeDamage(ChanceData["Bomb"].damage)
+                        for _,player in pairs(getPlayersInRadius(Bomb.Position, ChanceData["Bomb"].size / 2)) do
+                            if player.Character then
+                                local damage = ChanceData["Bomb"].damage
+                                local equipData = PlayerValues:GetValue(player, "Equipped")
+                                if equipData and equipData.dataType == "Shovels" then
+                                    if equipData.shovelStats.Special == "Bomb Resistance" or equipData.shovelStats.Special == "All Specials" then
+                                        damage /= 2
+                                    end
+                                end
+
+                                player.Character.Humanoid:TakeDamage(damage)
+                            end
                         end
+
+                        if not MapService.MakingNewMap then
+                            if not ExplosionService then ExplosionService = require(Physics.ExplosionService) end
+                            ExplosionService.create("Server", Bomb.Position, ChanceData["Bomb"].size, 15)
+                        end
+
+                        local particle = Assets.MapAssets.Explosion:Clone()
+                        particle:PivotTo(Bomb.CFrame)
+                        particle.Parent = workspace
+
+                        AudioService:Create(16433289, Bomb.Position, {Volume = 0.8})
+
+                        local growsize = Vector3.new(1, 1, 1) * ChanceData["Bomb"].size
+                        local goal = {Transparency = 0.9, Size = growsize}
+                        local properties = {Time = 0.15}
+                        TweenService.tween(particle, goal, properties)
+
+                        local goal = {Transparency = 1}
+                        local properties = {Time = 1.35}
+                        TweenService.tween(particle, goal, properties)
+
+                        game.Debris:AddItem(particle, 1.5)
+                        Bomb:Destroy()
                     end
-
-                    if not ExplosionService then ExplosionService = require(Physics.ExplosionService) end
-                    ExplosionService.create("Server", Bomb.Position, ChanceData["Bomb"].size, 15)
-
-                    local particle = Assets.MapAssets.Explosion:Clone()
-                    particle:PivotTo(Bomb.CFrame)
-                    particle.Parent = workspace
-
-                    AudioService:Create(16433289, Bomb.Position, {Volume = 0.8})
-
-                    local growsize = Vector3.new(1, 1, 1) * ChanceData["Bomb"].size
-                    local goal = {Transparency = 0.9, Size = growsize}
-                    local properties = {Time = 0.15}
-                    TweenService.tween(particle, goal, properties)
-
-                    local goal = {Transparency = 1}
-                    local properties = {Time = 1.35}
-                    TweenService.tween(particle, goal, properties)
-
-                    game.Debris:AddItem(particle, 1.5)
-                    Bomb:Destroy()
                 end)
             end
         end
@@ -415,7 +440,7 @@ end
 ---------------------------------------------------------
 
 local Map
-local MapTimer = 300
+local MapTimer = General.MapTimer
 
 local function teleportPlayers()
     for _,player in pairs(Players:GetChildren()) do
@@ -459,8 +484,12 @@ local function initalizeShovels()
             Stand.GMulti.SurfaceGui.Frame.TextLabel.Text = "G Multi:\n" .. shovelData.Stats.GMulti
             Stand.Luck.SurfaceGui.Frame.TextLabel.Text = "Luck:\n" .. shovelData.Stats.Luck
 
+            if shovelData.Special then
+                Stand.Special.SurfaceGui.Frame.TextLabel.Text = "Special:\n" .. shovelData.Special
+            end
+
             Stand.ShovelHolder.ShovelPrompt.ObjectText = Stand.Name
-            Stand.ShovelHolder.ShovelPrompt.ActionText = "Buy for " .. shovelData.Cost .. " Gold?"
+            Stand.ShovelHolder.ShovelPrompt.ActionText = "Buy for " .. comma_value(shovelData.Cost) .. " Gold?"
 
             local shovelPrompt = {
                 prompt = Stand.ShovelHolder.ShovelPrompt,
@@ -534,7 +563,10 @@ task.spawn(function()
                 Map:Destroy()
             end
             teleportPlayers()
+
+            MapService.MakingNewMap = true
             newMap()
+            MapService.MakingNewMap = false
 
             Values.MapTimer.Value = MapTimer
         end

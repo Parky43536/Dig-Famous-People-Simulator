@@ -75,7 +75,6 @@ local function loadFamous(data)
             if not famousUi then
                 famousUi = Assets.Ui.Famous:Clone()
                 famousUi.Name = famousId
-                famousUi.LayoutOrder = General.RarityData[famousData.Rarity].order
 
                 task.spawn(function()
                     famousUi.FamousHolder.FamousImage.Image = CharacterService:CreateCharacterIcon(famousId)
@@ -90,10 +89,12 @@ local function loadFamous(data)
                 total += 1
                 famousUi.FamousHolder.FamousName.BackgroundColor3 = General.RarityData[famousData.Rarity].color:Lerp(Color3.fromRGB(0,0,0), 0.75)
                 famousUi.FamousHolder.FamousImage.ImageColor3 = Color3.fromRGB(255, 255, 255)
+                famousUi.LayoutOrder = General.RarityData[famousData.Rarity].order
                 --famousUi.FamousHolder.FamousQuantity.Text = "x" .. #playerFamousData
             else
                 famousUi.FamousHolder.FamousName.BackgroundColor3 = Color3.fromRGB(0,0,0)
                 famousUi.FamousHolder.FamousImage.ImageColor3 = Color3.fromRGB(0, 0, 0)
+                famousUi.LayoutOrder = General.RarityData[famousData.Rarity].order + 10
                 --famousUi.FamousHolder.FamousQuantity.Text = ""
             end
 

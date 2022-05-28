@@ -1,5 +1,6 @@
 local General = {}
 
+General.MapTimer = 300
 General.ShovelValue = 0.2
 General.ChancePartDivider = 3
 General.ChanceMulti = 5000
@@ -21,7 +22,7 @@ General.RarityData = {
 	Common = {
 		order = 1,
 		color = Color3.fromRGB(255, 255, 255),
-		goldValue = 50,
+		goldValue = 100,
 	},
 
 	Rare = {

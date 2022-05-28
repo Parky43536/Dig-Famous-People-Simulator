@@ -29,13 +29,13 @@ local ClientConnection = Remotes:WaitForChild("ClientConnection")
 
 local ToolService = {}
 
-local EquippedTracker = {}
 local DigCooldown = {}
 
 function ToolService:PlayerStats(player, character)
     local shovelStats = {}
-    if EquippedTracker[player] and EquippedTracker[player].dataType == "Shovels" then
-        shovelStats = EquippedTracker[player].shovelStats.Stats
+    local equipData = PlayerValues:GetValue(player, "Equipped")
+    if equipData and equipData.dataType == "Shovels" then
+        shovelStats = equipData.shovelStats.Stats
     end
 
     local defaultStats = ShovelData["Default Shovel"].Stats
@@ -53,6 +53,21 @@ function ToolService:PlayerStats(player, character)
         GMulti = (shovelStats.GMulti or defaultStats.GMulti) + (General.PrestigeBonus.GMulti * prestige) + GMultiPowerUp,
         Luck = (shovelStats.Luck or defaultStats.Luck) + (General.PrestigeBonus.Luck * prestige) + LuckPowerUp,
     }
+
+    if equipData and equipData.shovelStats and equipData.shovelStats.Special then
+        if equipData.shovelStats.Special == "Double Speed" or equipData.shovelStats.Special == "All Specials" then
+            newStats.Speed *= 2
+        end
+        if equipData.shovelStats.Special == "Double Jump" or equipData.shovelStats.Special == "All Specials" then
+            newStats.Jump *= 2
+        end
+        if equipData.shovelStats.Special == "Double GMulti" or equipData.shovelStats.Special == "All Specials" then
+            newStats.GMulti *= 2
+        end
+        if equipData.shovelStats.Special == "Double Luck" or equipData.shovelStats.Special == "All Specials" then
+            newStats.Luck *= 2
+        end
+    end
 
     character.Humanoid.WalkSpeed = newStats.Speed
     character.Humanoid.JumpHeight = newStats.Jump
@@ -165,8 +180,18 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
     end
 
     local function Dig()
-        if not ExplosionService then ExplosionService = require(Physics.ExplosionService) end
-        ExplosionService.create(player, Handle.Position, shovelStats.Stats.Dig, 10)
+        if not MapService then MapService = require(RepServices.MapService) end
+        if not MapService.MakingNewMap then
+            local dig = shovelStats.Stats.Dig
+            if shovelStats.Special then
+                if shovelStats.Special == "Double Dig" or shovelStats.Special == "All Specials" then
+                    dig *= 2
+                end
+            end
+
+            if not ExplosionService then ExplosionService = require(Physics.ExplosionService) end
+            ExplosionService.create(player, Handle.Position, dig, 10)
+        end
 
         AudioService:Create(12222216, Handle.Position, {Volume = 0.6})
 
@@ -200,7 +225,13 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
 
         Dig()
 
-        task.wait(shovelStats.Stats.Reload)
+        local reload = shovelStats.Stats.Reload
+        if shovelStats.Special then
+            if shovelStats.Special == "Half Reload" or shovelStats.Special == "All Specials" then
+                reload /= 2
+            end
+        end
+        task.wait(reload)
 
         DigCooldown[player] = nil
         Tool.Enabled = true
@@ -211,14 +242,14 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
             return
         end
 
-        EquippedTracker[player] = {dataType = "Shovels", data = shovel, tool = Tool, shovelStats = shovelStats}
+        PlayerValues:SetValue(player, "Equipped", {dataType = "Shovels", data = shovel, tool = Tool, shovelStats = shovelStats})
         ToolService:PlayerStats(player, Character)
         
         ToolEquipped = true
     end
 
     local function Unequipped()
-        EquippedTracker[player] = nil
+        PlayerValues:SetValue(player, "Equipped", nil)
         ToolService:PlayerStats(player, Character)
 
         ToolEquipped = false
@@ -278,11 +309,11 @@ function ToolService:FamousManager(player, Tool, famous, famousStats)
             rig.Humanoid.PlatformStand = true
         end
 
-        EquippedTracker[player] = {dataType = "Famous", data = famous, tool = Tool, famousStats = famousStats}
+        PlayerValues:SetValue(player, "Equipped", {dataType = "Famous", data = famous, tool = Tool, famousStats = famousStats})
     end
 
     local function Unequipped()
-        EquippedTracker[player] = nil
+        PlayerValues:SetValue(player, "Equipped", nil)
     end
 
     Tool.Equipped:Connect(Equipped)
@@ -290,7 +321,7 @@ function ToolService:FamousManager(player, Tool, famous, famousStats)
 end
 
 function ToolService:SellEquippedTool(player)
-    local equipData = EquippedTracker[player]
+    local equipData = PlayerValues:GetValue(player, "Equipped")
     if equipData then
         local gold = 0
         local minMax
@@ -305,7 +336,7 @@ function ToolService:SellEquippedTool(player)
         local removed = DataManager:SellTool(player, equipData.dataType, equipData.data.uniqueId, gold, minMax)
         if removed then
             equipData.tool:Destroy()
-            EquippedTracker[player] = nil
+            PlayerValues:SetValue(player, "Equipped", nil)
 
             if player then
                 ToolService:PlayerStats(player, player.Character)

@@ -141,7 +141,17 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 						luckMulti = ((PlayerValues:GetValue(player, "Luck") or 1) - 1) * 2
 					end
 
-					if rng:NextInteger(1, data.chance) <= 2 + luckMulti then
+					local checkValue = 2
+					if key == "Bomb" then
+						local equipData = PlayerValues:GetValue(player, "Equipped")
+						if equipData and equipData.dataType == "Shovels" then
+							if equipData.shovelStats.Special == "More Bombs" or equipData.shovelStats.Special == "All Specials" then
+								checkValue *= 2
+							end
+						end
+					end
+
+					if rng:NextInteger(1, data.chance) <= checkValue + luckMulti then
 						table.insert(chanceParts[key], newPart)
 
 						if not data.ignoreTotal then

@@ -24,6 +24,17 @@ SideFrame.Spawn.Activated:Connect(function()
     end
 end)
 
+local function comma_value(amount)
+    local formatted = amount
+    while true do
+      formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+        if (k == 0) then
+            break
+        end
+    end
+    return formatted
+end
+
 local currentGold
 local currentTween
 local lastGoldUpate
@@ -33,9 +44,9 @@ local function loadGold(value)
             local goldGain = value - currentGold
             if goldGain ~= 0 then
                 if goldGain > 0 then
-                    SideFrame.Gold.GoldIncrease.Text = "+" .. goldGain
+                    SideFrame.Gold.GoldIncrease.Text = "+" .. comma_value(goldGain)
                 else
-                    SideFrame.Gold.GoldIncrease.Text = goldGain
+                    SideFrame.Gold.GoldIncrease.Text = comma_value(goldGain)
                 end
 
                 if currentTween then currentTween:Cancel() end
@@ -59,13 +70,13 @@ local function loadGold(value)
             currentGold = value
         end
 
-        SideFrame.Gold.GoldAmount.Text = value
+        SideFrame.Gold.GoldAmount.Text = comma_value(value)
     end
 end
 
 local function loadPrestige(value)
     if SideFrame then
-        SideFrame.CollectionAndStats.Stats.Prestige.Text = "Prestige: " .. value
+        SideFrame.CollectionAndStats.Stats.Prestige.Text = "Prestige: " .. comma_value(value)
         SideFrame.CollectionAndStats.Stats.Prestige.Visible = (value ~= 0)
     end
 end

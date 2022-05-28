@@ -29,36 +29,36 @@ local ChanceData = {
 	},
 	--------------------------
 	["SpeedPowerUp"] = {
-		chance = 2500,
+		chance = 2000,
 		ignoreLuck = true,
-		duration = 60,
+		duration = 30,
 		value = 5,
 	},
 	["JumpPowerUp"] = {
-		chance = 2500,
+		chance = 2000,
 		ignoreLuck = true,
-		duration = 60,
+		duration = 30,
 		value = 5,
 	},
 	["GMultiPowerUp"] = {
-		chance = 2500,
+		chance = 2000,
 		ignoreLuck = true,
-		duration = 60,
+		duration = 30,
 		value = 0.25,
 	},
 	["LuckPowerUp"] = {
-		chance = 2500,
+		chance = 2000,
 		ignoreLuck = true,
-		duration = 60,
+		duration = 30,
 		value = 0.25,
 	},
 	--------------------------
 	["Bomb"] = {
-		chance = 1000,
+		chance = 900,
 		ignoreLuck = true,
 		playerOnly = true,
 		size = 20,
-		damage = 40,
+		damage = 60,
 	},
 	["Crystal"] = {
 		chance = 100,
