@@ -289,7 +289,7 @@ function MapService:ChanceParts(chanceParts)
 
                     task.wait(2)
 
-                    for _,player in pairs(getPlayersInRadius(Bomb.Position, ChanceData["Bomb"].size)) do
+                    for _,player in pairs(getPlayersInRadius(Bomb.Position, ChanceData["Bomb"].size / 2)) do
                         if player.Character then
                             player.Character.Humanoid:TakeDamage(ChanceData["Bomb"].damage)
                         end
