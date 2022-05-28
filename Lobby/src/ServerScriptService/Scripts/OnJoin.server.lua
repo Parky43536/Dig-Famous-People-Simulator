@@ -35,7 +35,10 @@ local function playerAdded(newPlayer)
                 repeat task.wait(1) until newPlayer.Character
             end
 
-            ToolService:PlayerStats(newPlayer, newPlayer.Character.Humanoid)
+            local character = newPlayer.Character
+            if character then
+                ToolService:PlayerStats(newPlayer, character)
+            end
 
             local light = Instance.new("PointLight")
             light.Parent = newPlayer.Character.PrimaryPart

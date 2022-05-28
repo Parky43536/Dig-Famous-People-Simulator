@@ -14,6 +14,8 @@ local function onPromptTriggered(promptObject, player)
 		MapService:ProcessChest(player, promptObject)
 	elseif promptObject.Name == "ShovelPrompt" then
 		MapService:ProcessShovel(player, promptObject)
+	elseif promptObject.Name == "PowerUpPrompt" then
+		MapService:ProcessPowerUp(player, promptObject)
 	end
 end
 

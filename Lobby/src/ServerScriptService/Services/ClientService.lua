@@ -44,7 +44,7 @@ function ClientService.InitializeClient(player, profile)
 
     local character = player.Character
     if character then
-        ToolService:PlayerStats(player, character.Humanoid)
+        ToolService:PlayerStats(player, character)
     end
 
     for id, uniqueId in pairs(profile.Data.Shovels) do

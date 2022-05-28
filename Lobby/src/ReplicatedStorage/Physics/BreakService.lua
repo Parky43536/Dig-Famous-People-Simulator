@@ -5,6 +5,9 @@ local RepServices = ReplicatedStorage.Services
 local PlayerValues = require(RepServices.PlayerValues)
 local MapService = require(RepServices.MapService)
 
+local DataBase = ReplicatedStorage.Database
+local ChanceData = require(DataBase:WaitForChild("ChanceData"))
+
 local Utility = ReplicatedStorage.Utility
 local General = require(Utility.General)
 
@@ -128,21 +131,26 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 
 			if chancePartsTotal < originalPart.Size.Magnitude / General.ChancePartDivider then
 				local rng = Random.new()
-				for key, chance in pairs(General.ItemChances) do
+				for key, data in pairs(ChanceData) do
 					if not chanceParts[key] then chanceParts[key] = {} end
-					if player == "Server" and key == "Bomb" then continue end
 
 					local luckMulti = 1
-					if not General.ChanceLuckIgnore[key] and player ~= "Server" then
+					if player == "Server" then
+						if data.playerOnly then continue end
+					elseif not data.ignoreLuck then
 						luckMulti = ((PlayerValues:GetValue(player, "Luck") or 1) - 1) * 2
 					end
 
-					if rng:NextInteger(1, chance) <= 2 + luckMulti then
+					if rng:NextInteger(1, data.chance) <= 2 + luckMulti then
 						table.insert(chanceParts[key], newPart)
-						if not General.ChanceTotalIgnore[key] then
+
+						if not data.ignoreTotal then
 							chancePartsTotal += 1
 						end
-						break
+
+						if not data.dontBreak then
+							break
+						end
 					end
 				end
 			end

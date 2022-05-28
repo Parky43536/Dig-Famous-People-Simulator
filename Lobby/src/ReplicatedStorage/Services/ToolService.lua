@@ -17,10 +17,12 @@ local MapService
 local Utility = ReplicatedStorage:WaitForChild("Utility")
 local CharacterService = require(Utility:WaitForChild("CharacterService"))
 local General = require(Utility:WaitForChild("General"))
+local AudioService = require(Utility:WaitForChild("AudioService"))
 
 local DataBase = ReplicatedStorage.Database
 local ShovelData = require(DataBase:WaitForChild("ShovelData"))
 local FamousData = require(DataBase:WaitForChild("FamousData"))
+local ChanceData = require(DataBase:WaitForChild("ChanceData"))
 
 local Remotes = ReplicatedStorage.Remotes
 local ClientConnection = Remotes:WaitForChild("ClientConnection")
@@ -30,22 +32,30 @@ local ToolService = {}
 local EquippedTracker = {}
 local DigCooldown = {}
 
-function ToolService:PlayerStats(player, Humanoid, shovelStats)
-    if not shovelStats then shovelStats = {} end
+function ToolService:PlayerStats(player, character)
+    local shovelStats = {}
+    if EquippedTracker[player] and EquippedTracker[player].dataType == "Shovels" then
+        shovelStats = EquippedTracker[player].shovelStats.Stats
+    end
+
     local defaultStats = ShovelData["Default Shovel"].Stats
     local prestige = PlayerValues:GetValue(player, "Prestige") or 0
+    local SpeedPowerUp = PlayerValues:GetValue(player, "SpeedPowerUp") or 0
+    local JumpPowerUp = PlayerValues:GetValue(player, "JumpPowerUp") or 0
+    local GMultiPowerUp = PlayerValues:GetValue(player, "GMultiPowerUp") or 0
+    local LuckPowerUp = PlayerValues:GetValue(player, "LuckPowerUp") or 0
 
     local newStats = {
         Reload = (shovelStats.Reload or defaultStats.Reload),
         Dig = (shovelStats.Dig or defaultStats.Dig),
-        Speed = (shovelStats.Speed or defaultStats.Speed) + General.PrestigeBonus.Speed * prestige,
-        Jump = (shovelStats.Jump or defaultStats.Jump) + General.PrestigeBonus.Jump * prestige,
-        GMulti = (shovelStats.GMulti or defaultStats.GMulti) + General.PrestigeBonus.GMulti * prestige,
-        Luck = (shovelStats.Luck or defaultStats.Luck) + General.PrestigeBonus.Luck * prestige,
+        Speed = (shovelStats.Speed or defaultStats.Speed) + (General.PrestigeBonus.Speed * prestige) + SpeedPowerUp,
+        Jump = (shovelStats.Jump or defaultStats.Jump) + (General.PrestigeBonus.Jump * prestige) + JumpPowerUp,
+        GMulti = (shovelStats.GMulti or defaultStats.GMulti) + (General.PrestigeBonus.GMulti * prestige) + GMultiPowerUp,
+        Luck = (shovelStats.Luck or defaultStats.Luck) + (General.PrestigeBonus.Luck * prestige) + LuckPowerUp,
     }
 
-    Humanoid.WalkSpeed = newStats.Speed
-    Humanoid.JumpHeight = newStats.Jump
+    character.Humanoid.WalkSpeed = newStats.Speed
+    character.Humanoid.JumpHeight = newStats.Jump
 
     PlayerValues:SetValue(player, "GMulti", newStats.GMulti)
     PlayerValues:SetValue(player, "Luck", newStats.Luck)
@@ -61,6 +71,46 @@ function ToolService:PlayerStats(player, Humanoid, shovelStats)
     ClientConnection:FireClient(player, "showPlayerStats", {
         newStats = newStats
     })
+
+    local function powerUpEffect(powerUpType, add)
+        local attachment = character.PrimaryPart:FindFirstChild("Attachment")
+        if not attachment then
+            attachment = Instance.new("Attachment")
+            attachment.Parent = character.PrimaryPart
+        end
+
+        local findEffect = attachment:FindFirstChild(powerUpType .. "Effect")
+        if add then
+            if not findEffect then
+                local effect = Assets.PowerUps:FindFirstChild(powerUpType .. "Effect"):Clone()
+                effect.Parent = attachment
+            end
+        else
+            if findEffect then
+                findEffect:Destroy()
+            end
+        end
+    end
+    if SpeedPowerUp > 0 then
+        powerUpEffect("SpeedPowerUp", true)
+    else
+        powerUpEffect("SpeedPowerUp", false)
+    end
+    if JumpPowerUp > 0 then
+        powerUpEffect("JumpPowerUp", true)
+    else
+        powerUpEffect("JumpPowerUp", false)
+    end
+    if GMultiPowerUp > 0 then
+        powerUpEffect("GMultiPowerUp", true)
+    else
+        powerUpEffect("GMultiPowerUp", false)
+    end
+    if LuckPowerUp > 0 then
+        powerUpEffect("LuckPowerUp", true)
+    else
+        powerUpEffect("LuckPowerUp", false)
+    end
 end
 
 function ToolService:LoadShovel(player, shovelType, uniqueId)
@@ -103,10 +153,6 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
         end
     end
 
-    local Sounds = {
-        Dig = Handle:WaitForChild("Dig")
-    }
-
     local Animations = {
         Slash = 522635514,
     }
@@ -122,7 +168,7 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
         if not ExplosionService then ExplosionService = require(Physics.ExplosionService) end
         ExplosionService.create(player, Handle.Position, shovelStats.Stats.Dig, 10)
 
-        Sounds.Dig:Play()
+        AudioService:Create(12222216, Handle.Position, {Volume = 0.6})
 
         if Humanoid then
             if Humanoid.RigType == Enum.HumanoidRigType.R6 then
@@ -165,17 +211,17 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
             return
         end
 
-        ToolService:PlayerStats(player, Humanoid, shovelStats.Stats)
-
         EquippedTracker[player] = {dataType = "Shovels", data = shovel, tool = Tool, shovelStats = shovelStats}
+        ToolService:PlayerStats(player, Character)
+        
         ToolEquipped = true
     end
 
     local function Unequipped()
-        ToolService:PlayerStats(player, Humanoid)
+        EquippedTracker[player] = nil
+        ToolService:PlayerStats(player, Character)
 
         ToolEquipped = false
-        EquippedTracker[player] = nil
     end
 
     Tool.Activated:Connect(Activated)
@@ -200,7 +246,7 @@ function ToolService:LoadFamous(player, famousType, uniqueId)
         CharacterService:CreateCharacterRig(Tool.Handle, famous.famousType)
 
         if not MapService then MapService = require(RepServices.MapService) end
-        Tool.ToolTip = famousStats.Name .. ", " .. famousStats.Rarity .. ", " .. MapService:RoundDeci(1 / General.ItemChances[famousStats.Rarity] * 5000, 2) .. "%"
+        Tool.ToolTip = famousStats.Name .. ", " .. famousStats.Rarity .. ", " .. MapService:RoundDeci(1 / ChanceData[famousStats.Rarity].chance * General.ChanceMulti, 2) .. "%"
         Tool.Name = famousStats.Name
 
         if not player.Character then
@@ -261,9 +307,8 @@ function ToolService:SellEquippedTool(player)
             equipData.tool:Destroy()
             EquippedTracker[player] = nil
 
-            local character = player.Character
-            if character then
-                ToolService:PlayerStats(player, character.Humanoid)
+            if player then
+                ToolService:PlayerStats(player, player.Character)
             end
         end
     end

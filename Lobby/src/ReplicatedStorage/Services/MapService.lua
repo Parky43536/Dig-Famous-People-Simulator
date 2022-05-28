@@ -14,9 +14,14 @@ local ExplosionService
 local DataBase = ReplicatedStorage.Database
 local ShovelData = require(DataBase:WaitForChild("ShovelData"))
 local FamousData = require(DataBase:WaitForChild("FamousData"))
+local ChanceData = require(DataBase:WaitForChild("ChanceData"))
 
 local SerServices = ServerScriptService.Services
 local DataManager = require(SerServices.DataManager)
+
+local RepServices = ReplicatedStorage.Services
+local PlayerValues = require(RepServices.PlayerValues)
+local ToolService
 
 local Utility = ReplicatedStorage:WaitForChild("Utility")
 local CharacterService = require(Utility:WaitForChild("CharacterService"))
@@ -28,6 +33,7 @@ local MapService = {}
 local FamousPrompts = {}
 local ChestPrompts = {}
 local ShovelPrompts = {}
+local PowerUpPrompts = {}
 
 local rayCastParams = RaycastParams.new()
 rayCastParams.FilterType = Enum.RaycastFilterType.Blacklist
@@ -83,6 +89,25 @@ local function chooseRandom(dictionary, rarity)
 	end
 end
 
+local function getPlayersInRadius(position, radius)
+    local currentPlayers = Players:GetChildren()
+    local playersInRadius = {}
+
+    radius += 2 --limbs
+
+    for _,player in pairs(currentPlayers) do
+        if (player.Character.PrimaryPart.Position - position).Magnitude <= radius then
+            table.insert(playersInRadius, player)
+        end
+    end
+
+    return playersInRadius
+end
+
+local function toHMS(s)
+    return string.format("%01i:%02i", s/60%60, s%60)
+end
+
 function MapService:RoundDeci(n: number, decimal: number)
     return math.round(n * 10 ^ decimal) / (10 ^ decimal)
 end
@@ -109,7 +134,7 @@ function MapService:ChanceParts(chanceParts)
 
                     part:Destroy()
 
-                    famous.FamousPrompt.ObjectText = rarity .. ", " .. MapService:RoundDeci(1 / General.ItemChances[rarity] * 5000, 2) .. "%"
+                    famous.FamousPrompt.ObjectText = rarity .. ", " .. MapService:RoundDeci(1 / ChanceData[rarity].chance * General.ChanceMulti, 2) .. "%"
                     famous.FamousPrompt.ActionText = "Collect " .. famousStats.Name
 
                     local famousPrompt = {
@@ -134,13 +159,13 @@ function MapService:ChanceParts(chanceParts)
                     model.Name = "ChanceParts"
                     model.Parent = workspace.Map
                 end
-                chest.Parent =  workspace.Map:FindFirstChild("ChanceParts")
+                chest.Parent = workspace.Map:FindFirstChild("ChanceParts")
 
                 part:Destroy()
 
                 local gold = rng:NextInteger(General.ChestGold[rarity].min, General.ChestGold[rarity].max)
 
-                chest.Root.ChestPrompt.ObjectText = string.gsub(rarity, "GoldChest", "") .. ", " .. MapService:RoundDeci(1 / General.ItemChances[rarity] * 5000, 2) .. "%"
+                chest.Root.ChestPrompt.ObjectText = string.gsub(rarity, "GoldChest", "") .. ", " .. MapService:RoundDeci(1 / ChanceData[rarity].chance * General.ChanceMulti, 2) .. "%"
                 chest.Root.ChestPrompt.ActionText = "Collect " .. gold .. " Gold"
 
                 local chestPrompt = {
@@ -150,6 +175,49 @@ function MapService:ChanceParts(chanceParts)
                     model = chest,
                 }
                 table.insert(ChestPrompts, chestPrompt)
+            end
+        end
+    end
+
+    local function powerUpHandler(tabler, powerUpType)
+        for _,part in pairs(tabler) do
+            if coveredPart(part) then
+                local powerUp = Assets.PowerUps:FindFirstChild(powerUpType):Clone()
+                powerUp:PivotTo(part.CFrame * CFrame.Angles(0, math.rad(math.random(0, 360)), 0))
+
+                if not workspace.Map:FindFirstChild("ChanceParts") then
+                    local model = Instance.new("Model")
+                    model.Name = "ChanceParts"
+                    model.Parent = workspace.Map
+                end
+                powerUp.Parent = workspace.Map:FindFirstChild("ChanceParts")
+                task.spawn(function()
+                    local spinTime = 2
+                    while powerUp.Parent ~= nil do
+                        local goal = {Orientation = Vector3.new(0, powerUp.Effects.Orientation.Y + 360, 0)}
+                        local properties = {Time = spinTime}
+                        self.currentTween = TweenService.tween(powerUp.Effects, goal, properties)
+                        task.wait(spinTime)
+                    end
+                end)
+
+                part:Destroy()
+
+                powerUp.PrimaryPart.PowerUpPrompt.ObjectText = toHMS(ChanceData[powerUpType].duration) .. " duration"
+
+                if powerUpType == "GMultiPowerUp" then
+                    powerUp.PrimaryPart.PowerUpPrompt.ActionText = "Collect G Multi Power Up"
+                else
+                    powerUp.PrimaryPart.PowerUpPrompt.ActionText = "Collect " .. string.gsub(powerUpType, "PowerUp", "") .. " Power Up"
+                end
+
+                local powerUpPrompt = {
+                    prompt = powerUp.PrimaryPart.PowerUpPrompt,
+                    powerUpType = powerUpType,
+                    value = ChanceData[powerUpType].value,
+                    model = powerUp,
+                }
+                table.insert(PowerUpPrompts, powerUpPrompt)
             end
         end
     end
@@ -186,23 +254,49 @@ function MapService:ChanceParts(chanceParts)
         chestHandler(chanceParts.GoldChestCommon, "GoldChestCommon")
     end
 
+    if chanceParts.SpeedPowerUp then
+        powerUpHandler(chanceParts.SpeedPowerUp, "SpeedPowerUp")
+    end
+
+    if chanceParts.JumpPowerUp then
+        powerUpHandler(chanceParts.JumpPowerUp, "JumpPowerUp")
+    end
+
+    if chanceParts.GMultiPowerUp then
+        powerUpHandler(chanceParts.GMultiPowerUp, "GMultiPowerUp")
+    end
+
+    if chanceParts.LuckPowerUp then
+        powerUpHandler(chanceParts.LuckPowerUp, "LuckPowerUp")
+    end
+
     if chanceParts.Bomb then
         for _,part in pairs(chanceParts.Bomb) do
             if coveredPart(part) then
                 local Bomb = Assets.MapAssets.Bomb:Clone()
                 Bomb:PivotTo(part.CFrame * CFrame.Angles(0, math.random(0, 360), 0))
-                Bomb.Parent = part.Parent
+                Bomb.Parent = workspace.Map:FindFirstChild("ChanceParts")
                 part:Destroy()
 
                 task.spawn(function()
-                    repeat task.wait(2) until not coveredPart(part)
-                    --AudioService:Create(16433289, Bomb.Position, {Volume = 0.8})
+                    repeat task.wait(2) until not coveredPart(Bomb)
+                    for _,particle in pairs(Bomb:GetDescendants()) do
+                        if particle.ClassName == "ParticleEmitter" then
+                            particle.Enabled = true
+                        end
+                    end
+                    AudioService:Create(11565378, Bomb.Position, {Volume = 0.8, Duration = 2})
+
                     task.wait(2)
 
-                    local size = 20
+                    for _,player in pairs(getPlayersInRadius(Bomb.Position, ChanceData["Bomb"].size)) do
+                        if player.Character then
+                            player.Character.Humanoid:TakeDamage(ChanceData["Bomb"].damage)
+                        end
+                    end
 
                     if not ExplosionService then ExplosionService = require(Physics.ExplosionService) end
-                    ExplosionService.create("Server", Bomb.Position, 15, 15)
+                    ExplosionService.create("Server", Bomb.Position, ChanceData["Bomb"].size, 15)
 
                     local particle = Assets.MapAssets.Explosion:Clone()
                     particle:PivotTo(Bomb.CFrame)
@@ -210,7 +304,7 @@ function MapService:ChanceParts(chanceParts)
 
                     AudioService:Create(16433289, Bomb.Position, {Volume = 0.8})
 
-                    local growsize = Vector3.new(size, size, size)
+                    local growsize = Vector3.new(1, 1, 1) * ChanceData["Bomb"].size
                     local goal = {Transparency = 0.9, Size = growsize}
                     local properties = {Time = 0.15}
                     TweenService.tween(particle, goal, properties)
@@ -284,9 +378,36 @@ function MapService:ProcessChest(player, promptObject)
 end
 
 function MapService:ProcessShovel(player, promptObject)
-    for key, promptData in pairs(ShovelPrompts) do
+    for _, promptData in pairs(ShovelPrompts) do
         if promptData.prompt == promptObject then
             DataManager:NewShovel(player, promptData.shovelType, promptData.cost)
+            break
+        end
+    end
+end
+
+function MapService:ProcessPowerUp(player, promptObject)
+    for key, promptData in pairs(PowerUpPrompts) do
+        if promptData.prompt == promptObject then
+            PlayerValues:IncrementValue(player, promptData.powerUpType, promptData.value, "playerOnly")
+
+            if player.Character then
+                if not ToolService then ToolService = require(RepServices.ToolService) end
+                ToolService:PlayerStats(player, player.Character)
+            end
+
+            promptData.model:Destroy()
+            table.remove(PowerUpPrompts, key)
+
+            task.wait(ChanceData[promptData.powerUpType].duration)
+
+            if player then
+                PlayerValues:IncrementValue(player, promptData.powerUpType, -promptData.value, "playerOnly")
+
+                if player.Character then
+                    ToolService:PlayerStats(player, player.Character)
+                end
+            end
         end
     end
 end
@@ -356,6 +477,7 @@ local function newMap()
     FamousPrompts = {}
     ChestPrompts = {}
     ShovelPrompts = {}
+    PowerUpPrompts = {}
 
 	Map = Assets.Maps.Map:Clone()
 	Map.Parent = workspace

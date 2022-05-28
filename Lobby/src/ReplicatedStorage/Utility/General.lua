@@ -2,34 +2,7 @@ local General = {}
 
 General.ShovelValue = 0.2
 General.ChancePartDivider = 3
-
-General.ItemChances = {
-	Godly = 15000,
-    Mythic = 10000,
-    Legendary = 5000,
-    Epic = 1500,
-    Rare = 500,
-    Common = 100,
-
-    GoldChestLegendary = 5000,
-    GoldChestRare = 500,
-    GoldChestCommon = 100,
-
-	Bomb = 250,
-
-    Crystal = 50,
-    Variety = 3,
-}
-
-General.ChanceLuckIgnore = {
-	Crystal = true,
-	Variety = true,
-}
-
-General.ChanceTotalIgnore = {
-	Crystal = true,
-	Variety = true,
-}
+General.ChanceMulti = 5000
 
 General.PrestigeBonus = {
 	Speed = 5,

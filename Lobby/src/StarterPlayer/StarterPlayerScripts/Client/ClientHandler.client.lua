@@ -80,6 +80,13 @@ local function showStats(newStats)
                 else
                     statHolder.Text = stat .. ": " .. value
                 end
+
+                local PowerUp = PlayerValues:GetValue(LocalPlayer, stat .. "PowerUp")
+                if PowerUp and PowerUp > 0 then
+                    statHolder.TextColor3 = Color3.fromRGB(0, 255, 0)
+                else
+                    statHolder.TextColor3 = Color3.fromRGB(255, 255, 255)
+                end
             else
                 statHolder.Text = ""
             end
