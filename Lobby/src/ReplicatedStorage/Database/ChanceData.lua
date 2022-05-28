@@ -15,7 +15,7 @@ local ChanceData = {
 		chance = 500,
 	},
 	["Common"] = {
-		chance = 150000,
+		chance = 100,
 	},
 	--------------------------
 	["GoldChestLegendary"] = {
@@ -29,25 +29,25 @@ local ChanceData = {
 	},
 	--------------------------
 	["SpeedPowerUp"] = {
-		chance = 2000,
+		chance = 2500,
 		ignoreLuck = true,
 		duration = 60,
 		value = 5,
 	},
 	["JumpPowerUp"] = {
-		chance = 2000,
+		chance = 2500,
 		ignoreLuck = true,
 		duration = 60,
 		value = 5,
 	},
 	["GMultiPowerUp"] = {
-		chance = 2000,
+		chance = 2500,
 		ignoreLuck = true,
 		duration = 60,
 		value = 0.25,
 	},
 	["LuckPowerUp"] = {
-		chance = 2000,
+		chance = 2500,
 		ignoreLuck = true,
 		duration = 60,
 		value = 0.25,
