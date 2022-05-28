@@ -1,6 +1,6 @@
 local ChanceData = {
 	["Godly"] = {
-		chance = 15000,
+		chance = 25000,
 	},
 	["Mythic"] = {
 		chance = 10000,

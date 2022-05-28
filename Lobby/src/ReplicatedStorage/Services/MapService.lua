@@ -235,6 +235,10 @@ function MapService:ChanceParts(chanceParts)
         end
     end
 
+    if chanceParts.Godly then
+        famousHandler(chanceParts.Godly, "Godly")
+    end
+
     if chanceParts.Mythic then
         famousHandler(chanceParts.Mythic, "Mythic")
     end
