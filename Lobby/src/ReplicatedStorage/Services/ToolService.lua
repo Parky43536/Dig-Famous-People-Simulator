@@ -61,7 +61,7 @@ function ToolService:PlayerStats(player, character)
         if equipData.shovelStats.Special == "Double Jump" or equipData.shovelStats.Special == "All Specials" then
             newStats.Jump *= 2
         end
-        if equipData.shovelStats.Special == "Double GMulti" or equipData.shovelStats.Special == "All Specials" then
+        if equipData.shovelStats.Special == "Double G Multi" or equipData.shovelStats.Special == "All Specials" then
             newStats.GMulti *= 2
         end
         if equipData.shovelStats.Special == "Double Luck" or equipData.shovelStats.Special == "All Specials" then
