@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 
 local Assets = ReplicatedStorage.Assets
 
@@ -39,6 +40,12 @@ end)
 CollectionUi.CollectionFrame.TopFrame.Close.Activated:Connect(function()
     collectionUiEnable()
 end)
+
+local function onKeyPress(input, gameProcessedEvent)
+	if input.KeyCode == Enum.KeyCode.Z and gameProcessedEvent == false then
+		collectionUiEnable()
+	end
+end
 
 CollectionUi.CollectionFrame.BottomFrame.Prestige.Activated:Connect(function()
     PrestigeRemote:FireServer("prestige")
@@ -129,3 +136,5 @@ CollectionConnection.OnClientEvent:Connect(function(action, args)
         loadFamous(PlayerValues:GetValue(LocalPlayer, "Famous"))
     end
 end)
+
+UserInputService.InputBegan:Connect(onKeyPress)

@@ -1,6 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
-local Players = game:GetService("Players")
 
 local Assets = ReplicatedStorage.Assets
 
@@ -168,10 +167,6 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
         end
     end
 
-    local Animations = {
-        Slash = 522635514,
-    }
-
     local function CheckIfAlive(player)
         return player
         and player.Character
@@ -193,7 +188,7 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
             ExplosionService.create(player, Handle.Position, dig, 10)
         end
 
-        AudioService:Create(12222216, Handle.Position, {Volume = 0.6})
+        AudioService:Create(12222216, Handle, {Volume = 0.6})
 
         if Humanoid then
             if Humanoid.RigType == Enum.HumanoidRigType.R6 then
@@ -202,15 +197,8 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
                 Anim.Value = "Lunge"
                 Anim.Parent = Tool
             elseif Humanoid.RigType == Enum.HumanoidRigType.R15 then
-                local Anim = (Tool:FindFirstChild("Slash") or Create("Animation"){
-                    Name = "Slash",
-                    AnimationId = "rbxassetid://" .. Animations.Slash,
-                    Parent = Tool
-                })
-                if Anim then
-                    local Track = Humanoid:LoadAnimation(Anim)
-                    Track:Play(0)
-                end
+                local Track = Humanoid:LoadAnimation(Assets.Animations.ShovelSlash)
+                Track:Play(0)
             end
         end
     end
@@ -244,6 +232,10 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
 
         PlayerValues:SetValue(player, "Equipped", {dataType = "Shovels", data = shovel, tool = Tool, shovelStats = shovelStats})
         ToolService:PlayerStats(player, Character)
+
+        if shovelStats.Special == "Flight" or shovelStats.Special == "All Specials" then
+            PlayerValues:SetValue(player, "Flight", true, "playerOnly")
+        end
         
         ToolEquipped = true
     end
@@ -251,6 +243,10 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
     local function Unequipped()
         PlayerValues:SetValue(player, "Equipped", nil)
         ToolService:PlayerStats(player, Character)
+
+        if shovelStats.Special == "Flight" or shovelStats.Special == "All Specials" then
+            PlayerValues:SetValue(player, "Flight", nil, "playerOnly")
+        end
 
         ToolEquipped = false
     end
@@ -329,7 +325,7 @@ function ToolService:SellEquippedTool(player)
             gold = General.RarityData[equipData.famousStats.Rarity].goldValue
         elseif equipData.dataType == "Shovels" then
             gold = equipData.shovelStats.Cost * General.ShovelValue
-            minMax = {min = 0, max = equipData.shovelStats.Cost}
+            minMax = {min = 0, max = equipData.shovelStats.Cost * General.ShovelValue}
         end
 
         if not DataManager then DataManager = require(SerServices.DataManager) end

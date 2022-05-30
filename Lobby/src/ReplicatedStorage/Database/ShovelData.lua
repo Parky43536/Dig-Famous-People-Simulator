@@ -159,8 +159,8 @@ local ShovelData = {
 		Stats = {
 			Reload = 1,
 			Dig = 10,
-			Speed = 25,
-			Jump = 15,
+			Speed = 20,
+			Jump = 10,
 			GMulti = 2,
 			Luck = 2,
 		}
@@ -308,10 +308,10 @@ local ShovelData = {
 		Color = Color3.fromRGB(255, 255, 255),
 		Special = "All Specials",
 		Stats = {
-			Reload = 1,
-			Dig = 12,
-			Speed = 30,
-			Jump = 20,
+			Reload = 1.2,
+			Dig = 10,
+			Speed = 25,
+			Jump = 15,
 			GMulti = 3,
 			Luck = 3,
 		}

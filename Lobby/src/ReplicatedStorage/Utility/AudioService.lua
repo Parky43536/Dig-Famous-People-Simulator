@@ -80,7 +80,8 @@ function AudioService:Create(id, target, properties, effects, saveId)
 	newSoundObject.Parent = container
 	
 	coroutine.wrap(function()
-		wait((properties or {}).Delay or 0)
+		task.wait((properties or {}).Delay or 0)
+
 		newSoundObject:Play()
 		
 		if saveId then

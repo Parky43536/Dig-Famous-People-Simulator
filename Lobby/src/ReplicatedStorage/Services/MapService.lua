@@ -451,13 +451,13 @@ local function teleportPlayers()
         local character = player.Character
         if character and character.Parent ~= nil then
             local rng = Random.new()
-            character:PivotTo(workspace.SpawnLocation.CFrame + Vector3.new(rng:NextInteger(-8, 8), 4, rng:NextInteger(-8, 8)))
+            character:PivotTo(workspace.Permanent.SpawnLocation.CFrame + Vector3.new(rng:NextInteger(-8, 8), 4, rng:NextInteger(-8, 8)))
         end
     end
 end
 
 local function initalizeShovels()
-    for _,standHolder in pairs(workspace.Map.Shovels:GetChildren()) do
+    for _,standHolder in pairs(workspace.Permanent.Shovels:GetChildren()) do
         local shovelData = ShovelData[standHolder.Name]
         if shovelData then
             local Stand
@@ -509,10 +509,9 @@ end
 local function newMap()
     FamousPrompts = {}
     ChestPrompts = {}
-    ShovelPrompts = {}
     PowerUpPrompts = {}
 
-	Map = Assets.Maps.Map:Clone()
+	Map = Assets.Map:Clone()
 	Map.Parent = workspace
 
 	for _,object in pairs(Map:GetDescendants()) do
@@ -556,11 +555,15 @@ local function newMap()
             object:Destroy()
 		end
 	end
-
-    initalizeShovels()
 end
 
 task.spawn(function()
+    if workspace:FindFirstChild("Map") then
+        workspace.Map.Parent = ReplicatedStorage.Assets
+    end
+
+    initalizeShovels()
+
     while true do
         if Values.MapTimer.Value <= 0 then
             if Map then

@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
 
 local LocalPlayer = Players.LocalPlayer
 
@@ -16,13 +17,23 @@ local TweenService = require(Utility:WaitForChild("TweenService"))
 local Remotes = ReplicatedStorage:WaitForChild("Remotes")
 local ClientConnection = Remotes:WaitForChild("ClientConnection")
 
-SideFrame.Spawn.Activated:Connect(function()
+local function toSpawn()
     local character = LocalPlayer.Character
     if character and character.Parent ~= nil then
         local rng = Random.new()
-        character:PivotTo(workspace.SpawnLocation.CFrame + Vector3.new(rng:NextInteger(-8, 8), 4, rng:NextInteger(-8, 8)))
+        character:PivotTo(workspace.Permanent.SpawnLocation.CFrame + Vector3.new(rng:NextInteger(-8, 8), 4, rng:NextInteger(-8, 8)))
     end
+end
+
+SideFrame.Spawn.Activated:Connect(function()
+    toSpawn()
 end)
+
+local function onKeyPress(input, gameProcessedEvent)
+	if input.KeyCode == Enum.KeyCode.X and gameProcessedEvent == false then
+		toSpawn()
+	end
+end
 
 local function comma_value(amount)
     local formatted = amount
@@ -121,3 +132,5 @@ ClientConnection.OnClientEvent:Connect(function(action, args)
         showStats(args.newStats)
     end
 end)
+
+UserInputService.InputBegan:Connect(onKeyPress)

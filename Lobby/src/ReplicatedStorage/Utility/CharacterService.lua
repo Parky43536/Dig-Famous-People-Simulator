@@ -1,6 +1,12 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local Utility = ReplicatedStorage:WaitForChild("Utility")
+local General = require(Utility:WaitForChild("General"))
+
+local DataBase = ReplicatedStorage.Database
+local FamousData = require(DataBase:WaitForChild("FamousData"))
+
 local Assets = ReplicatedStorage.Assets
 
 local CharacterService = {}
@@ -102,6 +108,12 @@ function CharacterService:CreateCharacterRig(Part, userId)
 			local storage = characterModel:Clone()
 			storage.Parent = Assets.Storage.Rigs
 		end
+
+		--[[local highlight = Instance.new("Highlight")
+		highlight.DepthMode = Enum.HighlightDepthMode.Occluded
+		highlight.FillTransparency = 1
+		highlight.OutlineColor = General.RarityData[FamousData[userId].Rarity].color
+		highlight.Parent = characterModel]]
 
 		characterData:Destroy()
 	else
