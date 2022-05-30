@@ -35,6 +35,9 @@ local ChestPrompts = {}
 local ShovelPrompts = {}
 local PowerUpPrompts = {}
 
+local HazardCooldown = 1
+local HazardCooldowns = {}
+
 MapService.MakingNewMap = false
 
 local rayCastParams = RaycastParams.new()
@@ -343,6 +346,55 @@ function MapService:ChanceParts(chanceParts)
 
                         game.Debris:AddItem(particle, 1.5)
                         Bomb:Destroy()
+                    end
+                end)
+            end
+        end
+    end
+
+    if chanceParts.Spike then
+        for _,part in pairs(chanceParts.Spike) do
+            if coveredPart(part) then
+                local Spike = Assets.MapAssets.Spike:Clone()
+                Spike:PivotTo(part.CFrame * CFrame.Angles(math.random(0, 360), math.random(0, 360), math.random(0, 360)))
+                Spike.Parent = part.Parent
+
+                local function runSpike(hitPart)
+                    local humanoid = hitPart.Parent:FindFirstChild("Humanoid")
+	                if humanoid then
+                        local ticker = tick()
+                        if not HazardCooldowns[humanoid] or ticker - HazardCooldowns[humanoid] > HazardCooldown then
+                            HazardCooldowns[humanoid] = ticker
+
+                            humanoid:TakeDamage(ChanceData["Spike"].damage)
+                        end
+                    end
+                end
+
+                Spike.Spike1.Touched:connect(runSpike)
+                Spike.Spike2.Touched:connect(runSpike)
+            end
+        end
+    end
+
+    if chanceParts.Lava then
+        for _,part in pairs(chanceParts.Lava) do
+            if coveredPart(part) then
+                local Lava = Assets.MapAssets.Lava:Clone()
+                Lava:PivotTo(part.CFrame)
+                Lava.Size = part.Size
+                Lava.Parent = part.Parent
+                part:Destroy()
+
+                Lava.Touched:connect(function(hitPart)
+                    local humanoid = hitPart.Parent:FindFirstChild("Humanoid")
+	                if humanoid then
+                        local ticker = tick()
+                        if not HazardCooldowns[humanoid] or ticker - HazardCooldowns[humanoid] > HazardCooldown then
+                            HazardCooldowns[humanoid] = ticker
+
+                            humanoid:TakeDamage(ChanceData["Lava"].damage)
+                        end
                     end
                 end)
             end

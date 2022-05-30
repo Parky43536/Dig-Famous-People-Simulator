@@ -32,7 +32,7 @@ local humanoid
 local animate
 local idleAnim
 local moveAnim
-local lastAnim = idleAnim
+local lastAnim
 
 local function setFlying(flying)
 	isFlying = flying
@@ -44,7 +44,7 @@ local function setFlying(flying)
 	if (isFlying) then
 		lastAnim = idleAnim
 		lastAnim:Play()
-	else
+	elseif lastAnim then
 		lastAnim:Stop()
 	end
 end

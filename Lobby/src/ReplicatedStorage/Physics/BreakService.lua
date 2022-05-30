@@ -125,6 +125,15 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 			if CollectionService:HasTag(originalPart, "Decor") then
 				CollectionService:AddTag(newPart, "Decor")
 			end
+			if CollectionService:HasTag(originalPart, "Layer1") then
+				CollectionService:AddTag(newPart, "Layer1")
+			end
+			if CollectionService:HasTag(originalPart, "Layer2") then
+				CollectionService:AddTag(newPart, "Layer2")
+			end
+			if CollectionService:HasTag(originalPart, "Layer3") then
+				CollectionService:AddTag(newPart, "Layer3")
+			end
 
 			newPart.Parent = model
 			newPart.CFrame = CFrame.new(part.Position)
@@ -141,7 +150,26 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 						luckMulti = ((PlayerValues:GetValue(player, "Luck") or 1) - 1) * 2
 					end
 
-					local checkValue = 2
+					if data.layers then
+						local failed = false
+						for layer,_ in pairs(data.layers) do
+							if not CollectionService:HasTag(newPart, layer) then failed = true break end
+						end
+						if failed then
+							continue
+						end
+					end
+
+					local checkValue = 1
+					if CollectionService:HasTag(newPart, "Layer1") then
+						checkValue += 1
+					end
+					if CollectionService:HasTag(newPart, "Layer2") then
+						checkValue += 2
+					end
+					if CollectionService:HasTag(newPart, "Layer3") then
+						checkValue += 3
+					end
 					if key == "Bomb" then
 						local equipData = PlayerValues:GetValue(player, "Equipped")
 						if equipData and equipData.dataType == "Shovels" then
