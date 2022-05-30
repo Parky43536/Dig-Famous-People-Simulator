@@ -155,9 +155,9 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 					end
 
 					if data.layers then
-						local failed = false
+						local failed = true
 						for layer,_ in pairs(data.layers) do
-							if not layerSet == layer then failed = true break end
+							if layerSet == layer then failed = false break end
 						end
 						if failed then
 							continue
