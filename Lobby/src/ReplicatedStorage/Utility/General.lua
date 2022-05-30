@@ -1,8 +1,9 @@
 local General = {}
 
 General.MapTimer = 300
+General.BreakingGold = 1
 General.ShovelValue = 0.2
-General.ChancePartDivider = 3
+General.ChancePartDivider = 10
 General.ChanceMulti = 5000
 
 General.PrestigeBonus = {

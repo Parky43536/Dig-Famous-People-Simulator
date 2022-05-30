@@ -1,12 +1,17 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CollectionService = game:GetService("CollectionService")
+local ServerScriptService = game:GetService("ServerScriptService")
 local RunService = game:GetService("RunService")
 
 local Physics = ReplicatedStorage:WaitForChild("Physics")
 local BreakService = require(Physics:WaitForChild("BreakService"))
 
+local SerServices = ServerScriptService.Services
+local DataManager = require(SerServices.DataManager)
+
 local Utility = ReplicatedStorage:WaitForChild("Utility")
 local CollectionSelect = require(Utility:WaitForChild("CollectionSelect"))
+local General = require(Utility:WaitForChild("General"))
 
 local IsServer = RunService:IsServer()
 
@@ -66,6 +71,7 @@ function ExplosionService.create(player, position, radius, force, client)
 
 	local filteredInstances = CollectionSelect:SelectAll({"Destructable", "Breakable"})
 
+	local gold = 0
 	local nearbyParts = getNearbyParts(position, radius, filteredInstances)
 	for _,part in pairs(nearbyParts) do
 		local hitPlayer = game.Players:GetPlayerFromCharacter(part.Parent) or game.Players:GetPlayerFromCharacter(part.Parent.Parent)
@@ -80,13 +86,21 @@ function ExplosionService.create(player, position, radius, force, client)
 				
 					local inRange = getNearbyParts(position, radius, filteredDescendants)
 					for _,splitPart in pairs(inRange) do
-						task.defer(setPartVelocity, splitPart, position, force)
+						gold += General.BreakingGold
+						splitPart:Destroy()
+						--task.defer(setPartVelocity, splitPart, position, force)
 					end
 				end)
 			elseif not hitPlayer then
-				task.defer(setPartVelocity, part, position, force)
+				gold += General.BreakingGold
+				part:Destroy()
+				--task.defer(setPartVelocity, part, position, force)
 			end
 		end
+	end
+
+	if player ~= "Server" then
+		DataManager:GiveGold(player, math.floor(gold))
 	end
 end
 

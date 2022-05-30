@@ -172,14 +172,16 @@ function DataManager:SellTool(player, dataType, uniqueId, gold, minMax)
 end
 
 function DataManager:GiveGold(player, gold, minMax)
-	gold = math.floor(gold * (PlayerValues:GetValue(player, "GMulti") or 1))
+	if player and gold then
+		gold = math.floor(gold * (PlayerValues:GetValue(player, "GMulti") or 1))
 
-	if minMax then
-		gold = math.clamp(gold, minMax.min, minMax.max)
+		if minMax then
+			gold = math.clamp(gold, minMax.min, minMax.max)
+		end
+
+		DataManager:IncrementValue(player, "Gold", gold)
+		PlayerValues:IncrementValue(player, "Gold", gold, "playerOnly")
 	end
-
-	DataManager:IncrementValue(player, "Gold", gold)
-	PlayerValues:IncrementValue(player, "Gold", gold, "playerOnly")
 end
 
 function DataManager:Prestige(player)
