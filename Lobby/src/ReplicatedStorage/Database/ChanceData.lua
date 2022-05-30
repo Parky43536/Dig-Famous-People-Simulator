@@ -61,7 +61,7 @@ local ChanceData = {
 		damage = 60,
 	},
 	["Spike"] = {
-		chance = 100,
+		chance = 50,
 		ignoreLuck = true,
 		ignoreTotal = true,
 		dontBreak = true,

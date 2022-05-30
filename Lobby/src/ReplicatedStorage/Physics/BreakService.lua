@@ -122,17 +122,21 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 				end
 			end
 
+			local layerSet
 			if CollectionService:HasTag(originalPart, "Decor") then
 				CollectionService:AddTag(newPart, "Decor")
 			end
 			if CollectionService:HasTag(originalPart, "Layer1") then
 				CollectionService:AddTag(newPart, "Layer1")
+				layerSet = "Layer1"
 			end
 			if CollectionService:HasTag(originalPart, "Layer2") then
 				CollectionService:AddTag(newPart, "Layer2")
+				layerSet = "Layer2"
 			end
 			if CollectionService:HasTag(originalPart, "Layer3") then
 				CollectionService:AddTag(newPart, "Layer3")
+				layerSet = "Layer3"
 			end
 
 			newPart.Parent = model
@@ -153,7 +157,7 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 					if data.layers then
 						local failed = false
 						for layer,_ in pairs(data.layers) do
-							if not CollectionService:HasTag(newPart, layer) then failed = true break end
+							if not layerSet == layer then failed = true break end
 						end
 						if failed then
 							continue
@@ -161,13 +165,13 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 					end
 
 					local checkValue = 1
-					if CollectionService:HasTag(newPart, "Layer1") then
+					if layerSet == "Layer1" then
 						checkValue += 1
 					end
-					if CollectionService:HasTag(newPart, "Layer2") then
+					if layerSet == "Layer2" then
 						checkValue += 2
 					end
-					if CollectionService:HasTag(newPart, "Layer3") then
+					if layerSet == "Layer3" then
 						checkValue += 3
 					end
 					if key == "Bomb" then
