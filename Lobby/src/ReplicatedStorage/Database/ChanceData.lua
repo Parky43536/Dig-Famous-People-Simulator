@@ -66,7 +66,7 @@ local ChanceData = {
 		ignoreTotal = true,
 		dontBreak = true,
 		damage = 10,
-		--layers = {Layer2 = true, Layer3 = true},
+		layers = {Layer2 = true, Layer3 = true},
 	},
 	["Lava"] = {
 		chance = 1,
