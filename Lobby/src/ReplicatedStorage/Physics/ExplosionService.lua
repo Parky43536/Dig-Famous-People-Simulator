@@ -87,14 +87,14 @@ function ExplosionService.create(player, position, radius, force, client)
 					local inRange = getNearbyParts(position, radius, filteredDescendants)
 					for _,splitPart in pairs(inRange) do
 						gold += General.BreakingGold
-						splitPart:Destroy()
-						--task.defer(setPartVelocity, splitPart, position, force)
+						--splitPart:Destroy()
+						task.defer(setPartVelocity, splitPart, position, force)
 					end
 				end)
 			elseif not hitPlayer then
 				gold += General.BreakingGold
-				part:Destroy()
-				--task.defer(setPartVelocity, part, position, force)
+				--part:Destroy()
+				task.defer(setPartVelocity, part, position, force)
 			end
 		end
 	end
