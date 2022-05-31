@@ -17,6 +17,7 @@ local FamousData = require(DataBase:WaitForChild("FamousData"))
 
 local Utility = ReplicatedStorage:WaitForChild("Utility")
 local General = require(Utility:WaitForChild("General"))
+local AudioService = require(Utility:WaitForChild("AudioService"))
 
 local Remotes = ReplicatedStorage.Remotes
 local PrestigeRemote = Remotes.PrestigeRemote
@@ -119,7 +120,7 @@ function DataManager:NewShovel(player, shovelType, cost)
 
 		if cost then
 			if playerProfile.Data.Gold >= cost then
-				DataManager:GiveGold(player, -cost, {min = -shovelData.Cost, max = 0})
+				DataManager:GiveGold(player, -cost, {minMax = {min = -shovelData.Cost, max = 0}})
 				ToolService:LoadShovel(player, shovelType, uniqueId)
 			else
 				return false
@@ -159,7 +160,7 @@ function DataManager:SellTool(player, dataType, uniqueId, gold, minMax)
 			if tostring(dataUniqueId) == tostring(uniqueId) then
 				playerProfile.Data[dataType][id] = nil
 
-				DataManager:GiveGold(player, gold, minMax)
+				DataManager:GiveGold(player, gold, {minMax = minMax})
 
 				if dataType == "Famous" then
 					PlayerValues:SetValue(player, "Famous", playerProfile.Data.Famous, "playerOnly")
@@ -171,13 +172,21 @@ function DataManager:SellTool(player, dataType, uniqueId, gold, minMax)
 	end
 end
 
-function DataManager:GiveGold(player, gold, minMax)
+function DataManager:GiveGold(player, gold, args)
+	if not args then args = {} end
 	if player and gold then
 		gold = math.floor(gold * (PlayerValues:GetValue(player, "GMulti") or 1))
 
-		if minMax then
-			gold = math.clamp(gold, minMax.min, minMax.max)
+		if args.minMax then
+			gold = math.clamp(gold, args.minMax.min, args.minMax.max)
 		end
+
+		local volume = 0.6
+		if args.lowVolume then
+			volume /= 2
+		end
+		local rng = Random.new()
+		AudioService:Create(9781176124, player, {Volume = volume, Pitch = rng:NextNumber(0.9, 1.1)})
 
 		DataManager:IncrementValue(player, "Gold", gold)
 		PlayerValues:IncrementValue(player, "Gold", gold, "playerOnly")

@@ -100,7 +100,7 @@ function ExplosionService.create(player, position, radius, force, client)
 	end
 
 	if player ~= "Server" then
-		DataManager:GiveGold(player, math.floor(gold))
+		DataManager:GiveGold(player, math.floor(gold), {lowVolume = true})
 	end
 end
 
