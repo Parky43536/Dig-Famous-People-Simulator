@@ -61,11 +61,10 @@ local ChanceData = {
 		damage = 60,
 	},
 	["Spike"] = {
-		chance = 50,
+		chance = 15,
 		ignoreLuck = true,
 		ignoreTotal = true,
 		dontBreak = true,
-		damage = 10,
 		layers = {Layer2 = true, Layer3 = true},
 	},
 	["Lava"] = {
@@ -73,7 +72,6 @@ local ChanceData = {
 		ignoreLuck = true,
 		ignoreTotal = true,
 		dontBreak = true,
-		damage = 10,
 		layers = {Layer3 = true},
 	},
 	["Crystal"] = {

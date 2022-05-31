@@ -100,7 +100,7 @@ function AudioService:Create(id, target, properties, effects, saveId)
 					end
 				end)
 			elseif properties and properties.Duration then
-				wait((properties or {}).Duration or 0)
+				task.wait((properties or {}).Duration or 0)
 				if createdContainer then
 					container:Destroy()
 				else

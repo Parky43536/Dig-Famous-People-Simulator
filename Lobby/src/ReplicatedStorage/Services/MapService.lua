@@ -315,7 +315,7 @@ function MapService:ChanceParts(chanceParts)
                                 local damage = ChanceData["Bomb"].damage
                                 local equipData = PlayerValues:GetValue(player, "Equipped")
                                 if equipData and equipData.dataType == "Shovels" then
-                                    if equipData.shovelStats.Special == "Bomb Resistance" or equipData.shovelStats.Special == "All Specials" then
+                                    if equipData.shovelStats.Special == "Bomb Resistance" then
                                         damage /= 2
                                     end
                                 end
@@ -358,21 +358,6 @@ function MapService:ChanceParts(chanceParts)
                 local Spike = Assets.MapAssets.Spike:Clone()
                 Spike:PivotTo(part.CFrame * CFrame.Angles(math.random(0, 360), math.random(0, 360), math.random(0, 360)))
                 Spike.Parent = part.Parent
-
-                local function runSpike(hitPart)
-                    local humanoid = hitPart.Parent:FindFirstChild("Humanoid")
-	                if humanoid then
-                        local ticker = tick()
-                        if not HazardCooldowns[humanoid] or ticker - HazardCooldowns[humanoid] > HazardCooldown then
-                            HazardCooldowns[humanoid] = ticker
-
-                            humanoid:TakeDamage(ChanceData["Spike"].damage)
-                        end
-                    end
-                end
-
-                Spike.Spike1.Touched:connect(runSpike)
-                Spike.Spike2.Touched:connect(runSpike)
             end
         end
     end
@@ -385,18 +370,6 @@ function MapService:ChanceParts(chanceParts)
                 Lava.Size = part.Size
                 Lava.Parent = part.Parent
                 part:Destroy()
-
-                Lava.Touched:connect(function(hitPart)
-                    local humanoid = hitPart.Parent:FindFirstChild("Humanoid")
-	                if humanoid then
-                        local ticker = tick()
-                        if not HazardCooldowns[humanoid] or ticker - HazardCooldowns[humanoid] > HazardCooldown then
-                            HazardCooldowns[humanoid] = ticker
-
-                            humanoid:TakeDamage(ChanceData["Lava"].damage)
-                        end
-                    end
-                end)
             end
         end
     end

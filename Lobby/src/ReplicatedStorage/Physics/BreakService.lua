@@ -177,7 +177,7 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 					if key == "Bomb" then
 						local equipData = PlayerValues:GetValue(player, "Equipped")
 						if equipData and equipData.dataType == "Shovels" then
-							if equipData.shovelStats.Special == "More Bombs" or equipData.shovelStats.Special == "All Specials" then
+							if equipData.shovelStats.Special == "More Bombs" then
 								checkValue *= 2
 							end
 						end

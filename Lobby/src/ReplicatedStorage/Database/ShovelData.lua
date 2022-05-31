@@ -306,14 +306,14 @@ local ShovelData = {
 		id = 20,
 		Cost = 10000000,
 		Color = Color3.fromRGB(255, 255, 255),
-		Special = "All Specials",
+		Special = "God Mode",
 		Stats = {
-			Reload = 1.2,
-			Dig = 10,
-			Speed = 25,
-			Jump = 15,
-			GMulti = 3,
-			Luck = 3,
+			Reload = 0.6,
+			Dig = 20,
+			Speed = 50,
+			Jump = 30,
+			GMulti = 6,
+			Luck = 6,
 		}
 	},
 }

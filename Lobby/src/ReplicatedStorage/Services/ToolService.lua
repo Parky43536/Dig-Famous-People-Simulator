@@ -54,16 +54,16 @@ function ToolService:PlayerStats(player, character)
     }
 
     if equipData and equipData.shovelStats and equipData.shovelStats.Special then
-        if equipData.shovelStats.Special == "Double Speed" or equipData.shovelStats.Special == "All Specials" then
+        if equipData.shovelStats.Special == "Double Speed" then
             newStats.Speed *= 2
         end
-        if equipData.shovelStats.Special == "Double Jump" or equipData.shovelStats.Special == "All Specials" then
+        if equipData.shovelStats.Special == "Double Jump" then
             newStats.Jump *= 2
         end
-        if equipData.shovelStats.Special == "Double G Multi" or equipData.shovelStats.Special == "All Specials" then
+        if equipData.shovelStats.Special == "Double G Multi" then
             newStats.GMulti *= 2
         end
-        if equipData.shovelStats.Special == "Double Luck" or equipData.shovelStats.Special == "All Specials" then
+        if equipData.shovelStats.Special == "Double Luck" then
             newStats.Luck *= 2
         end
     end
@@ -179,7 +179,7 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
         if not MapService.MakingNewMap then
             local dig = shovelStats.Stats.Dig
             if shovelStats.Special then
-                if shovelStats.Special == "Double Dig" or shovelStats.Special == "All Specials" then
+                if shovelStats.Special == "Double Dig" then
                     dig *= 2
                 end
             end
@@ -215,7 +215,7 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
 
         local reload = shovelStats.Stats.Reload
         if shovelStats.Special then
-            if shovelStats.Special == "Half Reload" or shovelStats.Special == "All Specials" then
+            if shovelStats.Special == "Half Reload" then
                 reload /= 2
             end
         end
@@ -233,10 +233,15 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
         PlayerValues:SetValue(player, "Equipped", {dataType = "Shovels", data = shovel, tool = Tool, shovelStats = shovelStats})
         ToolService:PlayerStats(player, Character)
 
-        if shovelStats.Special == "Flight" or shovelStats.Special == "All Specials" then
+        if shovelStats.Special == "Flight" then
             PlayerValues:SetValue(player, "Flight", true, "playerOnly")
         end
-        
+
+        if shovelStats.Special == "God Mode" then
+            Humanoid.MaxHealth = 1000000
+            Humanoid.Health = Humanoid.MaxHealth
+        end
+
         ToolEquipped = true
     end
 
@@ -244,8 +249,13 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
         PlayerValues:SetValue(player, "Equipped", nil)
         ToolService:PlayerStats(player, Character)
 
-        if shovelStats.Special == "Flight" or shovelStats.Special == "All Specials" then
+        if shovelStats.Special == "Flight" then
             PlayerValues:SetValue(player, "Flight", nil, "playerOnly")
+        end
+
+        if shovelStats.Special == "God Mode" then
+            Humanoid.MaxHealth = 100
+            Humanoid.Health = Humanoid.MaxHealth
         end
 
         ToolEquipped = false

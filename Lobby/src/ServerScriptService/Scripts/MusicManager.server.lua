@@ -31,6 +31,6 @@ while true do
     table.remove(musicList, key)
 
     local music = AudioService:Create(picked, workspace.Sound)
-    music.Loaded:Wait()
+    if music.TimeLength == 0 then music.Loaded:Wait() end
     task.wait(music.TimeLength)
 end

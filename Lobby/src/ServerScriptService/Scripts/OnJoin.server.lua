@@ -1,8 +1,11 @@
 local Players = game:GetService("Players")
 local ServerScriptService = game:GetService("ServerScriptService")
+local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local ServerValues = require(ServerScriptService.ServerValues)
+
+local Assets = ReplicatedStorage.Assets
 
 local SerServices = ServerScriptService.Services
 local DataManager = require(SerServices.DataManager)
@@ -10,6 +13,9 @@ local ClientService = require(SerServices.ClientService)
 
 local RepServices = ReplicatedStorage.Services
 local ToolService = require(RepServices.ToolService)
+
+local Utility = ReplicatedStorage:WaitForChild("Utility")
+local General = require(Utility:WaitForChild("General"))
 
 local PlayerProfiles = {}
 
@@ -42,9 +48,31 @@ local function playerAdded(newPlayer)
 
             local light = Instance.new("PointLight")
             light.Parent = newPlayer.Character.PrimaryPart
+
+            local hitbox = Assets.Player.HitBox:Clone()
+            hitbox.CFrame = CFrame.new(newPlayer.Character.PrimaryPart.Position)
+            hitbox.Parent = newPlayer.Character
+
+            local weld = Instance.new("WeldConstraint")
+            weld.Part0 = newPlayer.Character.PrimaryPart
+            weld.Part1 = hitbox
+            weld.Parent = hitbox
+
+            local lastHit
+            hitbox.Touched:connect(function(hitPart)
+                if CollectionService:HasTag(hitPart, "Hazard") then
+                    local ticker = tick()
+                    if not lastHit or ticker - lastHit > General.HazardCooldown then
+                        lastHit = ticker
+                        newPlayer.Character.Humanoid:TakeDamage(General.HazardDamage)
+                    end
+                end
+            end)
         end)
 
         ClientService.InitializeClient(newPlayer, profile)
+
+        --prestige overhead
     end
 
     loadPlayer()
