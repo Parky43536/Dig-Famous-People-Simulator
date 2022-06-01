@@ -182,6 +182,14 @@ local function makeRemainingParts(player, model, parts, cubeSize, originalPart)
 							end
 						end
 					end
+					if key == "SpeedPowerUp" or key == "JumpPowerUp" or key == "GMultiPowerUp" or key == "LuckPowerUp" then
+						local equipData = PlayerValues:GetValue(player, "Equipped")
+						if equipData and equipData.dataType == "Shovels" then
+							if equipData.shovelStats.Special == "More Power Ups" then
+								checkValue *= 2
+							end
+						end
+					end
 
 					if rng:NextInteger(1, data.chance) <= checkValue + luckMulti then
 						table.insert(chanceParts[key], newPart)

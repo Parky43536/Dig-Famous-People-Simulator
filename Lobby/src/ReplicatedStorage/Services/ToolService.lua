@@ -237,6 +237,18 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
             PlayerValues:SetValue(player, "Flight", true, "playerOnly")
         end
 
+        if shovelStats.Special == "Invisibility" then
+            PlayerValues:SetValue(player, "Invisibility", true, "playerOnly")
+        end
+
+        if shovelStats.Special == "Teleport" then
+            PlayerValues:SetValue(player, "Teleport", true, "playerOnly")
+        end
+
+        if shovelStats.Special == "Hell Teleport" then
+            PlayerValues:SetValue(player, "HellTeleport", true, "playerOnly")
+        end
+
         if shovelStats.Special == "God Mode" then
             Humanoid.MaxHealth = 1000000
             Humanoid.Health = Humanoid.MaxHealth
@@ -253,9 +265,16 @@ function ToolService:ShovelManager(player, Tool, shovel, shovelStats)
             PlayerValues:SetValue(player, "Flight", nil, "playerOnly")
         end
 
-        if shovelStats.Special == "God Mode" then
-            Humanoid.MaxHealth = 100
-            Humanoid.Health = Humanoid.MaxHealth
+        if shovelStats.Special == "Invisibility" then
+            PlayerValues:SetValue(player, "Invisibility", nil, "playerOnly")
+        end
+
+        if shovelStats.Special == "Teleport" then
+            PlayerValues:SetValue(player, "Teleport", nil, "playerOnly")
+        end
+
+        if shovelStats.Special == "Hell Teleport" then
+            PlayerValues:SetValue(player, "HellTeleport", nil, "playerOnly")
         end
 
         ToolEquipped = false

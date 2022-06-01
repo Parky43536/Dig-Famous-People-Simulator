@@ -453,7 +453,14 @@ function MapService:ProcessPowerUp(player, promptObject)
             promptData.model:Destroy()
             table.remove(PowerUpPrompts, key)
 
-            task.wait(ChanceData[promptData.powerUpType].duration)
+            local duration = ChanceData[promptData.powerUpType].duration
+            local equipData = PlayerValues:GetValue(player, "Equipped")
+            if equipData and equipData.dataType == "Shovels" then
+                if equipData.shovelStats.Special == "Long Power Ups" then
+                    duration *= 2
+                end
+            end
+            task.wait(duration)
 
             if player then
                 PlayerValues:IncrementValue(player, promptData.powerUpType, -promptData.value, "playerOnly")

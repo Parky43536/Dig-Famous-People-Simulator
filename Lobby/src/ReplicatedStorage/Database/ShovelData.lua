@@ -156,6 +156,7 @@ local ShovelData = {
 		id = 9,
 		Cost = 100000,
 		Color = Color3.fromRGB(139, 41, 148),
+		Special = "Invisibility",
 		Stats = {
 			Reload = 1,
 			Dig = 10,
@@ -168,7 +169,7 @@ local ShovelData = {
 
 	["Adurite Shovel"] = {
 		id = 10,
-		Cost = 250000,
+		Cost = 200000,
 		Color = Color3.fromRGB(136, 0, 0),
 		Special = "Bomb Resistance",
 		Stats = {
@@ -183,7 +184,7 @@ local ShovelData = {
 
 	["Bombastic Shovel"] = {
 		id = 11,
-		Cost = 500000,
+		Cost = 300000,
 		Color = Color3.fromRGB(255, 115, 0),
 		Special = "More Bombs",
 		Stats = {
@@ -198,7 +199,7 @@ local ShovelData = {
 
 	["Aurora Shovel"] = {
 		id = 13,
-		Cost = 750000,
+		Cost = 350000,
 		Color = Color3.fromRGB(0, 255, 179),
 		Special = "Double Jump",
 		Stats = {
@@ -211,10 +212,9 @@ local ShovelData = {
 		}
 	},
 
-
 	["Electric Shovel"] = {
 		id = 14,
-		Cost = 800000,
+		Cost = 400000,
 		Color = Color3.fromRGB(0, 217, 255),
 		Special = "Double Speed",
 		Stats = {
@@ -289,7 +289,7 @@ local ShovelData = {
 
 	["Galactic Shovel"] = {
 		id = 19,
-		Cost = 2000000,
+		Cost = 4000000,
 		Color = Color3.fromRGB(159, 0, 173),
 		Special = "Flight",
 		Stats = {
@@ -310,6 +310,81 @@ local ShovelData = {
 		Stats = {
 			Reload = 0.6,
 			Dig = 20,
+			Speed = 50,
+			Jump = 30,
+			GMulti = 6,
+			Luck = 6,
+		}
+	},
+
+	["Ice Shovel"] = {
+		id = 21,
+		Cost = 550000,
+		Color = Color3.fromRGB(172, 252, 255),
+		Special = "Long Power Ups",
+		Stats = {
+			Reload = 1.1,
+			Dig = 12,
+			Speed = 21,
+			Jump = 9,
+			GMulti = 3,
+			Luck = 3,
+		}
+	},
+
+	["Omega Shovel"] = {
+		id = 22,
+		Cost = 750000,
+		Color = Color3.fromRGB(255, 0, 0),
+		Special = "More Power Ups",
+		Stats = {
+			Reload = 1,
+			Dig = 13,
+			Speed = 10,
+			Jump = 20,
+			GMulti = 3,
+			Luck = 3.5,
+		}
+	},
+
+	["Ghost Shovel"] = {
+		id = 23,
+		Cost = 2000000,
+		Color = Color3.fromRGB(255, 255, 255),
+		Special = "Invisibility",
+		Stats = {
+			Reload = 1,
+			Dig = 10,
+			Speed = 20,
+			Jump = 10,
+			GMulti = 3.5,
+			Luck = 3.5,
+		}
+	},
+
+	["Astral Shovel"] = {
+		id = 24,
+		Cost = 6000000,
+		Color = Color3.fromRGB(0, 225, 255),
+		Special = "Teleport",
+		Stats = {
+			Reload = 0.9,
+			Dig = 10,
+			Speed = 20,
+			Jump = 10,
+			GMulti = 3.5,
+			Luck = 3.5,
+		}
+	},
+
+	["Demonic Shovel"] = {
+		id = 25,
+		Cost = 8000000,
+		Color = Color3.fromRGB(255, 0, 0),
+		Special = "Hell Teleport",
+		Stats = {
+			Reload = 0.8,
+			Dig = 18,
 			Speed = 50,
 			Jump = 30,
 			GMulti = 6,

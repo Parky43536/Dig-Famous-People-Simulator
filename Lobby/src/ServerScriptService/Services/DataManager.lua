@@ -181,12 +181,10 @@ function DataManager:GiveGold(player, gold, args)
 			gold = math.clamp(gold, args.minMax.min, args.minMax.max)
 		end
 
-		local volume = 0.6
-		if args.lowVolume then
-			volume /= 2
+		if not args.noSound then
+			local rng = Random.new()
+			AudioService:Create(9781176124, player, {Volume = 0.6, Pitch = rng:NextNumber(0.9, 1.1)})
 		end
-		local rng = Random.new()
-		AudioService:Create(9781176124, player, {Volume = volume, Pitch = rng:NextNumber(0.9, 1.1)})
 
 		DataManager:IncrementValue(player, "Gold", gold)
 		PlayerValues:IncrementValue(player, "Gold", gold, "playerOnly")
